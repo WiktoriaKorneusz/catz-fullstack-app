@@ -24,11 +24,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
+// app.UseHttpsRedirection();
+app.UseCors(builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:4200"));
 
 app.UseAuthentication();
 app.UseAuthorization();
-// app.UseHttpsRedirection();
 app.MapControllers();
 
 

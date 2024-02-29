@@ -1,0 +1,33 @@
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AccountService } from '../_services/account.service';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-login-form',
+  standalone: true,
+  imports: [FormsModule, CommonModule],
+  templateUrl: './login-form.component.html',
+  styleUrl: './login-form.component.css',
+})
+export class LoginFormComponent {
+  model: any = {};
+
+  constructor(public accountService: AccountService) {}
+
+  ngOnInit() {}
+
+  login() {
+    console.log(this.model);
+    this.accountService.login(this.model).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => console.log(error),
+    });
+  }
+
+  logout() {
+    this.accountService.logout();
+  }
+}
