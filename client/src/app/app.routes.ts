@@ -7,6 +7,10 @@ import { MessagesComponent } from './messages/messages.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { AuthGuard } from './_guards/auth.guard';
+import path from 'path';
+import { TestErrorComponent } from './errors/test-error/test-error.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -23,6 +27,8 @@ export const routes: Routes = [
   },
   { path: 'login', component: LoginFormComponent },
   { path: 'register', component: RegisterFormComponent },
-
-  { path: '**', component: HomeComponent, pathMatch: 'full' },
+  { path: 'errors', component: TestErrorComponent },
+  { path: 'not-found', component: NotFoundComponent },
+  { path: 'server-error', component: ServerErrorComponent },
+  { path: '**', component: NotFoundComponent, pathMatch: 'full' },
 ];

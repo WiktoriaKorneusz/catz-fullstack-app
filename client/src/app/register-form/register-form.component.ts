@@ -23,7 +23,7 @@ export class RegisterFormComponent {
 
   register() {
     if (this.model.password !== this.model.passwordConfirm) {
-      this.cancel('passwords do not match!');
+      this.toastr.error('passwords do not match!');
       return;
     }
     this.accountService.register(this.model).subscribe({
@@ -33,7 +33,7 @@ export class RegisterFormComponent {
       },
       error: (error) => {
         this.cancel(error.message);
-        this.toastr.error('Unable to register');
+        // this.toastr.error('Unable to register');
       },
     });
   }

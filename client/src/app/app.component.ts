@@ -15,7 +15,6 @@ import { RegisterFormComponent } from './register-form/register-form.component';
   standalone: true,
   imports: [
     RouterOutlet,
-    HttpClientModule,
     CommonModule,
     NavbarComponent,
     FormsModule,
@@ -41,6 +40,12 @@ export class AppComponent implements OnInit {
     this.getUsers();
     this.setCurrentUser();
   }
+  testInterceptor() {
+    this.http.get('http://localhost:5248/api/users').subscribe((res) => {
+      console.log(res);
+    });
+  }
+
   setCurrentUser() {
     // const user : User = JSON.parse(localStorage.getItem('user')!);
     if (this.isLocalStorageAvailable) {
@@ -59,7 +64,7 @@ export class AppComponent implements OnInit {
         console.log(error);
       },
       complete: () => {
-        console.log('complete');
+        console.log('users request complete');
       },
     });
   }
