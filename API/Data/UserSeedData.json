@@ -1,0 +1,261 @@
+[
+    {
+      "UserName": "FluffyCat",
+      "DateOfBirth": "2000-01-01",
+      "KnownAs": "Fluffy",
+      "Created": "2022-01-01T00:00:00Z",
+      "LastActive": "2022-01-01T00:00:00Z",
+      "Pronouns": "he/him",
+      "Introduction": "I'm Fluffy, a friendly and cuddly cat!",
+      "About": "Fluffy is a gentle giant with a heart of gold. Despite his large size, he's incredibly affectionate and loves nothing more than cuddling up with his human companions. He enjoys lounging in the sun and playing with his favorite feather toy.      ",
+      "Interests": "Playing with toys, sunbathing, and napping",
+      "City": "Nice",
+      "Country": "France",
+      "Posts": [
+        {
+          "Content": "Cougar. Cornish rex leopard so kitten thai cheetah, american bobtail. Donskoy egyptian mau. Egyptian mau cougar. Devonshire rex cornish rex so lynx bengal ragdoll so mouser. Malkin cornish rex. Egyptian mau american bobtail ocelot siamese but american shorthair. Abyssinian lynx. Lion panther savannah but american bobtail or ragdoll. Burmese munchkin, munchkin munchkin or manx scottish fold singapura.",
+          "Photos" :[
+            {
+              "Url": "https://img.freepik.com/free-photo/stunning-square-portrait-adorable-cute-cat_181624-37290.jpg?w=1380&t=st=1710286587~exp=1710287187~hmac=5fb98f83e5cbce4048f5ba13e171535b8d172eda27b0dbe621c647fa23134a2e",
+              "IsMain": true
+            }
+          ]
+          
+        }
+      ]
+    },
+    {
+      "UserName": "WhiskersCat",
+      "DateOfBirth": "1995-05-05",
+      "KnownAs": "Whiskers",
+      "Created": "2022-01-02T00:00:00Z",
+      "LastActive": "2022-01-02T00:00:00Z",
+      "Pronouns": "she/her",
+      "Introduction": "Hi, I'm Whiskers! Ready to explore the world together?",
+      "About": "Whiskers is a playful and adventurous cat who's always up for a new challenge. She's curious by nature and loves exploring every nook and cranny of her home. When she's not on the hunt for hidden treasures, you can find her perched by the window, watching birds with intense focus.",
+      "Interests": "Exploring, birdwatching, and chasing laser pointers",
+      "City": "Toulouse",
+      "Country": "France",
+      "Posts": [
+        {
+          "Content": "Russian blue devonshire rex but ragdoll but sphynx egyptian mau norwegian forest kitten. Manx munchkin. Kitty burmese bobcat. Norwegian forest persian siberian bengal but singapura british shorthair. Panther bengal. Sphynx ocicat. Ocicat devonshire rex jaguar jaguar. Egyptian mau birman yet mouser yet himalayan or lion. Siamese british shorthair and sphynx. Norwegian forest. Mouser donskoy tiger.",
+          "Photos": [
+            {
+              "Url": "https://images.unsplash.com/photo-1574158622682-e40e69881006?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              "IsMain": true
+            }
+          ]
+          
+        }
+      ]
+      
+    },
+    {
+      "UserName": "MittensCat",
+      "DateOfBirth": "1988-10-10",
+      "KnownAs": "Mittens",
+      "Created": "2022-01-03T00:00:00Z",
+      "LastActive": "2022-01-03T00:00:00Z",
+      "Pronouns": "they/them",
+      "Introduction": "Hello, I'm Mittens! Let's snuggle up together!",
+      "About": "Gizmo is the epitome of elegance and grace. With his striking blue coat and piercing green eyes, he's a sight to behold. Despite his regal appearance, he's a total sweetheart who adores being pampered with chin scratches and belly rubs. He's also a bit of a foodie and has a penchant for gourmet treats",
+      "Interests": "Snuggling, purring, and birdwatching",
+      "City": "Lyon",
+      "Country": "France",
+      "Posts": [
+        {
+          "Content": "Devonshire rex malkin. Singapura persian russian blue maine coon cornish rex siberian. Scottish fold manx lion so balinese american shorthair tomcat. Russian blue cheetah bengal, for leopard. Jaguar maine coon for burmese persian cheetah maine coon siberian. Sphynx birman tom but birman persian, donskoy yet thai. Tomcat. Ocelot kitty leopard. Siamese egyptian mau.",
+          "Photos": [
+            {
+              "Url": "https://images.pexels.com/photos/12109413/pexels-photo-12109413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+              "IsMain": true
+            }
+          ]
+          
+        }
+      ]
+      
+    },
+    {
+      "UserName": "ShadowCat",
+      "DateOfBirth": "1980-12-15",
+      "KnownAs": "Shadow",
+      "Created": "2022-01-04T00:00:00Z",
+      "LastActive": "2022-01-04T00:00:00Z",
+      "Pronouns": "xe/xem",
+      "Introduction": "I'm Shadow, a mysterious and adventurous cat!",
+      "About": "Luna is a gentle and affectionate soul who's always eager to make new friends. With her stunning blue eyes and silky fur, she has a magnetic presence that draws people in. She loves spending time with her human family, whether it's cuddling on the couch or chasing after her favorite toy mouse",
+      "Interests": "Exploring dark alleys, hunting mice, and napping in the sun",
+      "City": "Marseille",
+      "Country": "France",
+      "Posts": [
+        {
+          "Content": "Leopard tabby and norwegian forest. Turkish angora american bobtail yet russian blue, so puma or persian, and devonshire rex. Panther jaguar so ocelot tom sphynx cornish rex. Himalayan manx kitten. Havana brown bengal munchkin for mouser egyptian mau or tiger. Abyssinian siberian bengal so abyssinian balinese birman. Norwegian forest birman panther or tomcat but egyptian mau mouser",
+          "Photos": [
+            {
+              "Url": "https://images.pexels.com/photos/9787888/pexels-photo-9787888.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+              "IsMain": true
+            }
+          ]
+          
+        }
+      ]
+      
+    },
+    {
+        "UserName": "TigerCat",
+        "DateOfBirth": "2019-10-10",
+        "KnownAs": "Tiger",
+        "Created": "2022-01-05T00:00:00Z",
+        "LastActive": "2022-01-05T00:00:00Z",
+        "Pronouns": "zie/hir",
+        "Introduction": "Hey there, I'm Tiger! Ready to conquer the world?",
+        "About": "Simba is a spirited and energetic cat who's constantly on the move. He's a natural athlete with a love for climbing, jumping, and exploring. He enjoys interactive play sessions with his humans and has a mischievous streak that keeps everyone on their toes. Despite his boundless energy, he's also a loyal companion who's always by your side when you need him.        ",
+        "Interests": "Hunting, climbing trees, and lounging in the sun",
+        "City": "Paris",
+        "Country": "France",
+        "Posts": [
+          {
+            "Content": "Devonshire rex maine coon munchkin panther russian blue mouser or bobcat. Grimalkin. Ocicat. Grimalkin bengal mouser. Persian jaguar so british shorthair for british shorthair egyptian mau cougar. Mouser. Himalayan siamese or thai.",
+            "Photos": [
+              {
+                  "Url": "https://images.pexels.com/photos/6638266/pexels-photo-6638266.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    },
+    {
+        "UserName": "SnowballCat",
+        "DateOfBirth": "2017-12-01",
+        "KnownAs": "Snowball",
+        "Created": "2022-01-06T00:00:00Z",
+        "LastActive": "2022-01-06T00:00:00Z",
+        "Pronouns": "she/her",
+        "Introduction": "Hi there, I'm Snowball! Let's play in the snow together!",
+        "About": "Misty is a serene and elegant cat with a luxurious coat that's the envy of all her feline friends. She's a gentle soul who enjoys lounging in sunbeams and being pampered with gentle strokes. Misty has a calming presence that brings peace and tranquility to her home",
+        "Interests": "Playing in the snow, chasing snowflakes, and curling up by the fireplace",
+        "City": "Philadelphia",
+        "Country": "United States",
+        "Posts": [
+          {
+            "Content": "Panther siberian mouser burmese yet jaguar abyssinian . Burmese bombay mouser. Mouser. Scottish fold. Norwegian forest cougar, but persian. Bobcat siberian, for tabby for thai. Scottish fold jaguar and bengal tabby bengal kitten or tomcat. Cornish rex siberian yet abyssinian american shorthair.",
+            "Photos": [
+              {
+                  "Url": "https://images.pexels.com/photos/17475823/pexels-photo-17475823/free-photo-of-a-white-cat-on-the-path-in-the-garden.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    },{
+        "UserName": "GingerCat",
+        "DateOfBirth": "2016-08-15",
+        "KnownAs": "Ginger",
+        "Created": "2022-01-07T00:00:00Z",
+        "LastActive": "2022-01-07T00:00:00Z",
+        "Pronouns": "he/him",
+        "Introduction": "Hello, I'm Ginger! Let's spice up life together!",
+        "About": "Leo is a spirited and adventurous cat with a wild streak that's impossible to tame. He's a natural-born explorer who loves climbing to the highest heights and surveying his kingdom from above. Leo is fiercely independent but also fiercely loyal to his human family, whom he protects with unwavering devotion.",
+        "Interests": "Chasing butterflies, lounging in the sun, and snuggling",
+        "City": "Houston",
+        "Country": "United States",
+        "Posts": [
+          {
+            "Content": "Himalayan bobcat so birman manx but ragdoll ocicat. Devonshire rex cougar devonshire rex persian or ragdoll yet jaguar himalayan. Ocelot scottish fold kitty savannah. Tom havana brown and singapura. Siamese lynx. Grimalkin cheetah so russian blue but savannah or cougar maine coon. Siberian kitten siberian panther for american bobtail malkin and persian.",
+            "Photos": [
+              {
+                  "Url": "https://images.pexels.com/photos/11565293/pexels-photo-11565293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    },
+    {
+        "UserName": "CleoCat",
+        "DateOfBirth": "2019-04-20",
+        "KnownAs": "Cleo",
+        "Created": "2022-01-08T00:00:00Z",
+        "LastActive": "2022-01-08T00:00:00Z",
+        "Pronouns": "she/her",
+        "Introduction": "Meow, I'm Cleo! Ready to rule over my kingdom with grace and charm!",
+        "About": "Luna is a sweet and gentle soul with a heartwarming smile that lights up the room. She has unique folded ears that give her an endearing appearance. Luna is a social butterfly who loves meeting new people and making friends. She's happiest when she's curled up in a cozy spot, surrounded by loved ones.",
+        "Interests": "Lounging on my throne, chasing feather toys, and napping in sunbeams",
+        "City": "Chicago",
+        "Country": "United States",
+        "Posts": [
+          {
+            "Content": "Ocicat tomcat for cornish rex for ragdoll but sphynx balinese or himalayan. Cornish rex. Thai cheetah so american shorthair british shorthair for siamese so malkin yet grimalkin. Singapura bobcat yet british shorthair, for scottish fold. Bombay scottish fold yet bombay, or havana brown and kitten. Thai cheetah tiger yet kitty. Cheetah thai, norwegian forest lynx. Panther. Himalayan bobcat himalayan or maine coon siberian russian blue. Donskoy russian blue yet ragdoll leopard. Cougar turkish angora ragdoll. Savannah.",
+            "Photos": [
+              {
+                  "Url": "https://images.pexels.com/photos/667228/pexels-photo-667228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    },
+    {
+        "UserName": "SmokeyCat",
+        "DateOfBirth": "2017-02-10",
+        "KnownAs": "Smokey",
+        "Created": "2022-01-09T00:00:00Z",
+        "LastActive": "2022-01-09T00:00:00Z",
+        "Pronouns": "they/them",
+        "Introduction": "Hey there, I'm Smokey! Let's explore the world together!",
+        "About": "Max is a majestic and regal cat with an impressive mane that commands attention wherever he goes. He's a natural leader who takes charge of his domain with confidence and grace. Max enjoys spending time outdoors, exploring the great outdoors, and basking in the beauty of nature.",
+        "Interests": "Exploring new places, climbing trees, and birdwatching",
+        "City": "Los Angeles", 
+        "Country": "United States" ,
+        "Posts": [
+          {
+            "Content": "Leopard tabby and norwegian forest. Turkish angora american bobtail yet russian blue, so puma or persian, and devonshire rex. Panther jaguar so ocelot tom sphynx cornish rex. Himalayan manx kitten. Havana brown bengal munchkin for mouser egyptian mau or tiger. Abyssinian siberian bengal so abyssinian balinese birman. Norwegian forest birman panther or tomcat but egyptian mau mouser.",
+            "Photos": [
+              {
+                  "Url": "https://images.pexels.com/photos/15236914/pexels-photo-15236914/free-photo-of-a-cute-white-cat-lying-down.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    },
+    {
+        "UserName": "OreoCat",
+        "DateOfBirth": "2015-12-25",
+        "KnownAs": "Oreo",
+        "Created": "2022-01-10T00:00:00Z",
+        "LastActive": "2022-01-10T00:00:00Z",
+        "Pronouns": "xe/xem",
+        "Introduction": "Hi, I'm Oreo! Let's play and cuddle together!",
+        "About": "Oreo is a playful and mischievous cat with a heart of gold. True to his name, he has a striking black and white coat that resembles his namesake cookie. Oreo loves chasing after feather toys and racing through obstacle courses. He's full of energy and always ready for an adventure",
+        "Interests": "Playing with string toys, cuddling with humans, and exploring boxes",
+        "City": "New York City", 
+        "Country": "United States",
+        "Posts": [
+          {
+            "Content": "Burmese ocelot yet ocicat malkin or tomcat. Donskoy jaguar. Siamese cougar and burmese, or turkish angora yet singapura. Abyssinian ocicat or mouser donskoy ragdoll. Ocicat. Singapura havana brown bengal. Savannah birman, or grimalkin yet bombay for birman puma. Kitten balinese lynx. Tomcat. Tabby cheetah, norwegian forest himalayan himalayan. Scottish fold cheetah leopard abyssinian and kitten and scottish fold.",
+            "Photos": [
+              {
+                  "Url": "https://images.unsplash.com/photo-1505776777247-d26acc0e505b?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "IsMain": true
+              }
+          ]
+            
+          }
+        ]
+        
+    }
+]  
+  

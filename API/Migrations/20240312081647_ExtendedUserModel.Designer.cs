@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240312081647_ExtendedUserModel")]
+    partial class ExtendedUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -26,35 +29,12 @@ namespace API.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PublicId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Photos");
-                });
-
-            modelBuilder.Entity("API.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PublicId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -64,7 +44,7 @@ namespace API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -73,13 +53,12 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("About")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Created")
@@ -89,27 +68,37 @@ namespace API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Interests")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Introduction")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("KnownAs")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("LookingFor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MyProperty")
+                        .HasColumnType("INTEGER");
+
                     b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("BLOB");
 
                     b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
                         .HasColumnType("BLOB");
 
-                    b.Property<string>("Pronouns")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -119,19 +108,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Photo", b =>
                 {
-                    b.HasOne("API.Models.Post", "Post")
-                        .WithMany("Photos")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("API.Models.Post", b =>
-                {
                     b.HasOne("API.Models.User", "User")
-                        .WithMany("Posts")
+                        .WithMany("Photos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -139,14 +117,9 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Models.Post", b =>
-                {
-                    b.Navigation("Photos");
-                });
-
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Navigation("Posts");
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }
