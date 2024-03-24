@@ -12,11 +12,15 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { basicInterceptor } from './_interceptors/basic.interceptor';
+import { jwtInterceptor } from './_interceptors/jwt.interceptor';
 // import { testInterceptor } from './_interceptors/test.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([basicInterceptor]), withFetch()),
+    provideHttpClient(
+      withInterceptors([basicInterceptor, jwtInterceptor]),
+      withFetch()
+    ),
     provideRouter(routes),
     provideClientHydration(),
     provideAnimations(),

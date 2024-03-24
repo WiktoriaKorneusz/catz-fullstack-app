@@ -14,8 +14,9 @@ namespace API.Helpers
             .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Posts.SelectMany(p => p.Photos)
                 .FirstOrDefault(p => p.IsMain).Url))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
-            CreateMap<Photo, PhotoDto>();
             CreateMap<Post, PostDto>();
+            CreateMap<Photo, PhotoDto>();
         }
+
     }
 }

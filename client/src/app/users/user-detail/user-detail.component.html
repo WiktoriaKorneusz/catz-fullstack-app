@@ -1,1 +1,103 @@
-<p>user-detail works!</p>
+<div class="">
+    
+   
+       <div class="container mx-auto my-5 p-5">
+           <div class="md:flex no-wrap md:-mx-2 ">
+               <!-- Left Side -->
+               <div class="w-full md:w-3/12 md:mx-2 ">
+                   <!-- Profile Card -->
+                   <div class="bg-blue-100 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
+                       <div class="image overflow-hidden">
+                           <img class="h-auto w-full mx-auto rounded-md"
+                               src="{{user?.mainPhotoUrl || './assets/userImage.jpg'}}"
+                               alt="">
+                       </div>
+                       <h1 class="text-slate-900 mt-4 font-bold text-3xl leading-8 ">{{user?.knownAs}} <span class="text-base text-slate-500  leading-6 font-normal mb-2">
+                        ({{user?.pronouns}})</span></h1>
+                       <h3 class="text-blue-500 hover:text-blue-600 text-base font-lg text-semibold leading-6">&commat;{{user?.userName}}</h3>
+                      
+                       <p class="text-sm text-slate-700  leading-6">{{user?.introduction}}</p>
+                       <p class="text-sm text-slate-500  leading-6">{{user?.about}}</p>
+                       
+                   </div>
+                   <!-- End of profile card -->
+                   <div class="my-4"></div>
+                   
+               </div>
+               <!-- Right Side -->
+               <div class="w-full md:w-9/12 md:mx-2 h-64">
+                   <!-- Profile tab -->
+                   <!-- About Section -->
+                   <div class="bg-blue-100 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
+                       <div class="flex items-center space-x-2 font-semibold text-slate-900 leading-8">
+                           <span clas="text-green-500">
+                               
+                            <fa-icon [icon]="faUser"></fa-icon>
+                           </span>
+                           <span class="tracking-wide text-lg"> About</span>
+                       </div>
+                       <div class="text-slate-700">
+                           <div class="grid md:grid-cols-2 text-sm">
+                                <div class="grid grid-cols-2">
+                                    <div class="px-4 py-2 font-semibold">Country</div>
+                                    <div class="px-4 py-2">{{user?.country}}</div>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <div class="px-4 py-2 font-semibold">City</div>
+                                    <div class="px-4 py-2">{{user?.city}}</div>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <div class="px-4 py-2 font-semibold">Age</div>
+                                    <div class="px-4 py-2">{{user?.age}}</div>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <div class="px-4 py-2 font-semibold">Interests</div>
+                                    <div class="px-4 py-2">{{user?.interests}}</div>
+                                </div>
+                               
+                               
+
+                           </div>
+                       </div>
+                       
+                   </div>
+                   <!-- End of about section -->
+   
+                   <div class="my-4"></div>
+   
+                   <!-- Experience and education -->
+                   <div class="bg-blue-100 pb-6 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
+   
+                       <div class="grid">
+                           <div>
+                               <div class="flex items-center space-x-2 font-semibold text-slate-900 leading-8 mb-3">
+                                   <span clas="text-green-500">
+                                    <fa-icon [icon]="faImage"></fa-icon>
+                                   </span>
+                                   <span class="tracking-wide text-lg">Posts</span>
+                               </div>
+                               <div class=" grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <!-- post -->
+                                    <div *ngFor="let post of posts" class="relative group overflow-hidden rounded-xl border">
+                                        <a href="#">
+                                          <div class="image overflow-hidden">
+                                            <img *ngIf="post.photos && post.photos.length > 0" 
+                                                 class="h-auto w-full mx-auto rounded-md"
+                                                 [src]="post.photos[0].url"
+                                                 alt="Post Image">
+                                          </div>
+                                        </a>
+                                    </div>
+                                      
+
+                                </div>
+                           </div>
+                           
+                       </div>
+                       <!-- End of Experience and education grid -->
+                   </div>
+                   <!-- End of profile tab -->
+               </div>
+           </div>
+       </div>
+   </div>

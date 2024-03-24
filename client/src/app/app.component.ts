@@ -37,8 +37,8 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsers();
-    this.setCurrentUser();
+    // this.getUsers();
+    this.setUser();
   }
   testInterceptor() {
     this.http.get('http://localhost:5248/api/users').subscribe((res) => {
@@ -46,13 +46,15 @@ export class AppComponent implements OnInit {
     });
   }
 
-  setCurrentUser() {
+  setUser() {
     // const user : User = JSON.parse(localStorage.getItem('user')!);
     if (this.isLocalStorageAvailable) {
-      const userString = localStorage.getItem('user');
-      if (!userString) return;
-      const user: User = JSON.parse(userString);
-      this.accountService.setCurrentUser(user);
+      const user: User = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log(user);
+      if (user && Object.keys(user).length > 0)
+        this.accountService.setCurrentUser(user);
+      // const user: User = JSON.parse(userString);
+      else return;
     }
   }
 

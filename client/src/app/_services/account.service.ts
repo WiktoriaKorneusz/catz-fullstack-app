@@ -2,12 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/user';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  baseUrl = 'http://localhost:5248/api/';
+  baseUrl = environment.apiUrl;
+  //(null)
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
   private isLocalStorageAvailable = typeof localStorage !== 'undefined';
@@ -46,6 +48,7 @@ export class AccountService {
   }
 
   setCurrentUser(user: User) {
+    console.log(user);
     this.currentUserSource.next(user);
   }
 
