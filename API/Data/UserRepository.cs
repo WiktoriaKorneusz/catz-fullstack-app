@@ -37,8 +37,16 @@ namespace API.Data
             .ToListAsync();
         }
 
+        public async Task<UserInfoDto> GetUserInfo(int id)
+        {
+            return await _context.Users
+            .Where(u => u.Id == id)
+            .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+        }
 
 
+        //will delete them later
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
@@ -50,6 +58,8 @@ namespace API.Data
             // .Include(p => p.Photos)
             .SingleOrDefaultAsync(u => u.UserName == username);
         }
+
+
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
