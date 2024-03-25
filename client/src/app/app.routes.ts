@@ -11,6 +11,7 @@ import path from 'path';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { PostDetailComponent } from './posts/post-detail/post-detail.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'users/:username', component: UserDetailComponent },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+      { path: 'posts/:id', component: PostDetailComponent },
     ],
   },
   { path: 'login', component: LoginFormComponent },

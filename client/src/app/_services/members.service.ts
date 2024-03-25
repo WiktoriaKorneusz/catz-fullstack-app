@@ -8,9 +8,10 @@ import { Member } from '../_models/member';
 })
 export class MembersService {
   baseUrl = environment.apiUrl;
-  private isLocalStorageAvailable = typeof localStorage !== 'undefined';
+  // private isLocalStorageAvailable = typeof localStorage !== 'undefined';
 
   constructor(private http: HttpClient) {}
+
   getMembers() {
     return this.http.get<Member[]>(
       this.baseUrl + 'users'
