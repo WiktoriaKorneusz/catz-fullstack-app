@@ -7,11 +7,10 @@
     </div>
     <div class="flow-root">
             <ul role="list" class="divide-y divide-blue-300 ">
-            @for (user of users; track user){
-                <li class="py-3 sm:py-4">
+                <li *ngFor="let user of users$ | async" class="py-3 sm:py-4">
                     <app-user-card [user]="user"></app-user-card>
                 </li>
-            }
+            
                 
             </ul>
         </div>

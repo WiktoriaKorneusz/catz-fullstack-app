@@ -12,7 +12,9 @@ namespace API.Interfaces
         void Update(Post post);
         Task<bool> SaveAllAsync();
         //Post is readolny there
-        Task<IEnumerable<PostDisplayDto>> GetPostsAsync();
-        Task<PostDisplayDto> GetPostByIdAsync(int id);
+        Task<IEnumerable<PostDisplayDto>> GetPostsDisplayAsync();
+        Task<PostDisplayDto> GetPostDisplayByIdAsync(int id);
+        Task<IEnumerable<Post>> GetPostsAsync();
+        Task<Post> GetPostByIdAsync(int id);
     }
 }

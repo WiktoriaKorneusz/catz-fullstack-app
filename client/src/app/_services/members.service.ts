@@ -2,27 +2,47 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Member } from '../_models/member';
+import { map, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MembersService {
   baseUrl = environment.apiUrl;
-  // private isLocalStorageAvailable = typeof localStorage !== 'undefined';
+  members: Member[] = [];
 
   constructor(private http: HttpClient) {}
 
   getMembers() {
-    return this.http.get<Member[]>(
-      this.baseUrl + 'users'
+    if (this.members.length > 0) return of(this.members);
+    return this.http
+      .get<Member[]>(
+        this.baseUrl + 'users'
+        // this.getHttpOptions()
+      )
+      .pipe(
+        map((members) => {
+          this.members = members;
+          return members;
+        })
+      );
+  }
+
+  getMember(username: string) {
+    const member = this.members.find((member) => member.userName === username);
+    if (member) return of(member);
+    return this.http.get<Member>(
+      this.baseUrl + 'users/' + username
       // this.getHttpOptions()
     );
   }
 
-  getMember(username: string) {
-    return this.http.get<Member>(
-      this.baseUrl + 'users/' + username
-      // this.getHttpOptions()
+  updateMember(member: Member) {
+    return this.http.put(this.baseUrl + 'users', member).pipe(
+      tap(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = { ...this.members[index], ...member };
+      })
     );
   }
 

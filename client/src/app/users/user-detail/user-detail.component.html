@@ -1,7 +1,37 @@
 <div class="">
+    <div *ngIf="isUserLoggedUser" class="relative">
+
     
+        <button class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around 
+                        fixed bottom-0  right-8 rounded-md sm:bottom-5
+                        mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10">
+          <div class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full  bg-red-500 hover:bg-red-600 transition duration-200 ease-in-out">
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </div>
+      
+        </button>
+        <button routerLink="/user/edit" class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around 
+                        fixed bottom-0  right-24 rounded-md sm:bottom-5
+                        mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10">
+          <div class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full  bg-blue-500 hover:bg-blue-600 transition duration-200 ease-in-out">
+            <fa-icon [icon]="faPenToSquare"></fa-icon>
+          </div>
+      
+        </button>
+        <button class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around 
+                        fixed bottom-0  right-40 rounded-md sm:bottom-5
+                        mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10">
+          <div class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full  bg-green-500 hover:bg-green-600 transition duration-200 ease-in-out">
+            <fa-icon [icon]="faPlus"></fa-icon>
+          </div>
+      
+        </button>
+        
+        
+        
+    </div>
    
-       <div class="container mx-auto my-5 p-5">
+       <div class="container mx-auto mb-12 md:mb-0 my-5 p-5">
            <div class="md:flex no-wrap md:-mx-2 ">
                <!-- Left Side -->
                <div class="w-full md:w-3/12 md:mx-2 ">
@@ -25,10 +55,10 @@
                    
                </div>
                <!-- Right Side -->
-               <div class="w-full md:w-9/12 md:mx-2 h-64">
+               <div class="w-full  md:w-9/12 md:mx-2 ">
                    <!-- Profile tab -->
                    <!-- About Section -->
-                   <div class="bg-blue-100 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
+                   <div class="bg-blue-100 p-3  shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
                        <div class="flex items-center space-x-2 font-semibold text-slate-900 leading-8">
                            <span clas="text-green-500">
                                
@@ -63,9 +93,9 @@
                    </div>
                    <!-- End of about section -->
    
-                   <div class="my-4"></div>
+                   <div class="my-4 "></div>
    
-                   <div class="bg-blue-100 pb-6 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
+                   <div class="bg-blue-100  pb-6 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500">
    
                        <div class="grid">
                            <div>

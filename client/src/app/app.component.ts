@@ -3,12 +3,11 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
-import { LoginFormComponent } from './login-form/login-form.component';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from './_services/account.service';
 import { User } from './_models/user';
 import { HomeComponent } from './home/home.component';
-import { RegisterFormComponent } from './register-form/register-form.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +17,9 @@ import { RegisterFormComponent } from './register-form/register-form.component';
     CommonModule,
     NavbarComponent,
     FormsModule,
-    LoginFormComponent,
-    RegisterFormComponent,
     HomeComponent,
     RouterModule,
+    SpinnerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

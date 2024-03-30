@@ -4,20 +4,28 @@ import { PostsService } from '../../_services/posts.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { AccountService } from '../../_services/account.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, GalleryModule],
+  imports: [CommonModule, RouterLink, GalleryModule, FontAwesomeModule],
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.css',
 })
 export class PostDetailComponent {
+  faTrash = faTrash;
+  faPenToSquare = faPenToSquare;
+  isUserAuthor: boolean = false;
   post: PostDisplay | undefined;
   photos: GalleryItem[] = [];
 
   constructor(
     private postsService: PostsService,
+    private accountsService: AccountService,
     private route: ActivatedRoute
   ) {}
 
@@ -33,6 +41,7 @@ export class PostDetailComponent {
       next: (post) => {
         this.post = post;
         this.getPhotos();
+        this.checkAuthorship();
         console.log(this.post);
       },
       error: (err) => console.log(err),
@@ -50,4 +59,19 @@ export class PostDetailComponent {
       );
     }
   }
+
+  checkAuthorship() {
+    this.accountsService.currentUser$.pipe(take(1)).subscribe({
+      next: (user) => {
+        this.isUserAuthor = user?.username === this.post?.userName;
+        console.log(this.isUserAuthor);
+      },
+    });
+  }
 }
+// this.accountsService.currentUser$?.pipe(
+//   map((user) => {
+//     this.isUserAuthor = user?.username === this.post?.userName;
+//     console.log(this.isUserAuthor);
+//   })
+// );

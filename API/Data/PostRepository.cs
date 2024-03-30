@@ -21,7 +21,16 @@ namespace API.Data
             _context = context;
             _mapper = mapper;
         }
-        public async Task<PostDisplayDto> GetPostByIdAsync(int id)
+
+        public async Task<Post> GetPostByIdAsync(int id)
+        {
+            return await _context.Posts
+                .Include(p => p.User) // Eager load the User navigation property
+                .SingleOrDefaultAsync(p => p.Id == id);
+        }
+
+
+        public async Task<PostDisplayDto> GetPostDisplayByIdAsync(int id)
         {
             return await _context.Posts
                 .Include(post => post.User)
@@ -30,7 +39,12 @@ namespace API.Data
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PostDisplayDto>> GetPostsAsync()
+        public async Task<IEnumerable<Post>> GetPostsAsync()
+        {
+            return await _context.Posts.ToListAsync();
+        }
+
+        public async Task<IEnumerable<PostDisplayDto>> GetPostsDisplayAsync()
         {
             return await _context.Posts
                 .Include(p => p.User)

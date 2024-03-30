@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
@@ -33,7 +34,7 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        // [HttpGet("{Id}")]
+        // [HttpGet("{Id}")] 
         // public async Task<ActionResult<User>> GetUserById(int id)
         // {
         //     return await _userRepository.GetUserByIdAsync(id);
@@ -46,6 +47,20 @@ namespace API.Controllers
             // var userToRetun = _mapper.Map<MemberDto>(userFromDb);
             return await _userRepository.GetMemberByUsernameAsync(username);
 
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(UserUpdateDto userUpdateDto)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return NotFound();
+
+            //updating user
+            _mapper.Map(userUpdateDto, user);
+
+            if (await _userRepository.SaveAllAsync()) return NoContent();
+            return BadRequest("Couldn't update user");
         }
     }
 }

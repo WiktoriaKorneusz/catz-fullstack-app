@@ -24,4 +24,12 @@ export class PostsService {
       // this.getHttpOptions()
     );
   }
+
+  updatePost(id: number, post: PostDisplay) {
+    return this.http.put<PostDisplay>(
+      this.baseUrl + 'posts/' + id,
+      post
+      // this.getHttpOptions()
+    );
+  }
 }

@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs';
 import { User } from '../_models/user';
 
-export const AuthGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = (route, state) => {
   // const accountService = inject(AccountService);
   const toastr = inject(ToastrService);
   const isLocalStorageAvailable = typeof localStorage !== 'undefined';
