@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { PostDisplay } from '../../_models/postDisplay';
 import { PostsService } from '../../_services/posts.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -26,7 +26,8 @@ export class PostDetailComponent {
   constructor(
     private postsService: PostsService,
     private accountsService: AccountService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +67,17 @@ export class PostDetailComponent {
         this.isUserAuthor = user?.username === this.post?.userName;
         console.log(this.isUserAuthor);
       },
+    });
+  }
+  deletePost() {
+    console.log(this.post);
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    this.postsService.deletePost(+id).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/users/' + this.post?.userName);
+      },
+      error: (err) => console.log(err),
     });
   }
 }

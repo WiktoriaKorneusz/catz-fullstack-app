@@ -32,4 +32,30 @@ export class PostsService {
       // this.getHttpOptions()
     );
   }
+
+  deletePost(id: number) {
+    return this.http.delete(this.baseUrl + 'posts/delete-post/' + id);
+  }
+
+  // addPhoto(id: number, file: File) {
+
+  addPhoto(id: number, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(this.baseUrl + 'posts/add-photo/' + id, formData);
+  }
+
+  deletePhoto(postId: number, photoId: number) {
+    return this.http.delete(
+      this.baseUrl + 'posts/delete-photo/' + postId + '/' + photoId
+    );
+  }
+
+  setMainPhoto(postId: number, photoId: number) {
+    return this.http.put(
+      this.baseUrl + 'posts/set-main-photo/' + postId + '/' + photoId,
+      {}
+    );
+  }
 }

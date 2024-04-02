@@ -25,7 +25,8 @@ namespace API.Data
         public async Task<Post> GetPostByIdAsync(int id)
         {
             return await _context.Posts
-                .Include(p => p.User) // Eager load the User navigation property
+                .Include(p => p.User)
+                .Include(p => p.Photos)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
@@ -41,7 +42,7 @@ namespace API.Data
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts.Include(p => p.Photos).ToListAsync();
         }
 
         public async Task<IEnumerable<PostDisplayDto>> GetPostsDisplayAsync()

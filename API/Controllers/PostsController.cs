@@ -4,7 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.Extensions;
 using API.Interfaces;
+using API.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +18,15 @@ namespace API.Controllers
     public class PostsController : BaseController
     {
         private readonly IPostRepository _postRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IPhotoService _photoService;
         private readonly IMapper _mapper;
 
-        public PostsController(IPostRepository postRepository, IMapper mapper)
+        public PostsController(IPostRepository postRepository, IUserRepository userRepository, IPhotoService photoService, IMapper mapper)
         {
             _postRepository = postRepository;
+            _userRepository = userRepository;
+            _photoService = photoService;
             _mapper = mapper;
         }
 
@@ -35,10 +41,11 @@ namespace API.Controllers
         public async Task<ActionResult<PostDisplayDto>> GetPost(int id)
         {
             var post = await _postRepository.GetPostDisplayByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
             return Ok(post);
-
-
-
         }
 
         [HttpPut("{id}")]
@@ -47,14 +54,212 @@ namespace API.Controllers
             var post = await _postRepository.GetPostByIdAsync(id);
             if (post == null) return NotFound();
 
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (post.User.UserName != username) return Unauthorized(); // Make sure this line correctly accesses the UserName
+            var username = User.GetUsername();
+            if (post.User.UserName != username) return Unauthorized();
 
             _mapper.Map(postUpdateDto, post);
 
             if (await _postRepository.SaveAllAsync()) return NoContent();
             return BadRequest("Couldn't update post");
         }
+        [HttpPost("add-post")]
+        public async Task<ActionResult<PostDisplayDto>> AddPost([FromForm] PostUpdateDto postDto, List<IFormFile> photos)
+        {
+
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null) return Unauthorized();
+
+            List<Photo> photoList = new List<Photo>();
+
+            foreach (var file in photos)
+            {
+                var result = await _photoService.AddPhotoAsync(file);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+                var fullUrl = result.SecureUrl.AbsoluteUri;
+
+                // Split the URL by '/'
+                var parts = fullUrl.Split('/');
+
+                // Find the index of the part that starts with 'v' followed by numbers
+                var versionIndex = Array.FindIndex(parts, part => part.StartsWith('v') && part.Skip(1).All(char.IsDigit));
+
+                // Join back the relevant parts of the URL
+                var desiredUrl = string.Join("/", parts.Skip(versionIndex));
+
+                var photo = new Photo
+                {
+                    Url = desiredUrl,
+                    PublicId = result.PublicId
+                };
+                if (user.Posts.Count == 0 && photoList.Count == 0)
+                {
+                    photo.IsMain = true;
+                }
+
+                photoList.Add(photo);
+            }
+
+            var post = new Post
+            {
+                Content = postDto.Content,
+                Photos = photoList
+            };
+
+            user.Posts.Add(post);
+            // if (await _userRepository.SaveAllAsync()) return CreatedAtAction(nameof(GetPost), new { id = post.Id }, _mapper.Map<PostDisplayDto>(post));
+
+            if (await _userRepository.SaveAllAsync())
+            {
+                var createdPost = await _postRepository.GetPostDisplayByIdAsync(post.Id);
+                return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPost);
+
+            }
+
+
+            return BadRequest("Couldn't add post");
+        }
+        [HttpDelete("delete-post/{id}")]
+        public async Task<ActionResult> DeletePost(int id)
+        {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+
+            var username = User.GetUsername();
+            if (post.User.UserName != username) return Unauthorized();
+
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return Unauthorized();
+
+            foreach (var photo in post.Photos)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+            user.Posts.Remove(post);
+            if (await _userRepository.SaveAllAsync()) return NoContent();
+            return BadRequest("Couldn't delete post");
+
+        }
+        [HttpPost("add-photo/{id}")]
+        public async Task<ActionResult<PostDisplayDto>> AddPhoto(IFormFile file, int id)
+        {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+
+            var username = User.GetUsername();
+            if (post.User.UserName != username) return Unauthorized();
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return Unauthorized();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null) return BadRequest(result.Error.Message);
+            Console.WriteLine(result);
+            var fullUrl = result.SecureUrl.AbsoluteUri;
+
+            // Split the URL by '/'
+            var parts = fullUrl.Split('/');
+
+            // Find the index of the part that starts with 'v' followed by numbers
+            var versionIndex = Array.FindIndex(parts, part => part.StartsWith('v') && part.Skip(1).All(char.IsDigit));
+
+            // Join back the relevant parts of the URL
+            var desiredUrl = string.Join("/", parts.Skip(versionIndex));
+
+
+            var photo = new Photo
+            {
+                Url = desiredUrl,
+                // Url = result.SecureUrl.AbsolutePath,
+
+                PublicId = result.PublicId
+            };
+            if (user.Posts.Count == 0) photo.IsMain = true;
+            if (post.Photos.Count >= 5) return BadRequest("user can't have more than 5 photos"); ;
+
+
+            post.Photos.Add(photo);
+
+            if (await _postRepository.SaveAllAsync())
+            {
+                var createdPost = await _postRepository.GetPostDisplayByIdAsync(post.Id);
+                return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPost);
+            }
+
+            return BadRequest("Couldn't add post");
+        }
+
+        //this will be changed
+        [HttpPut("set-main-photo/{postId}/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int postId, int photoId)
+        {
+            var post = await _postRepository.GetPostByIdAsync(postId);
+            if (post == null) return NotFound();
+
+            var username = User.GetUsername();
+            if (post.User.UserName != username) return Unauthorized();
+
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return Unauthorized();
+
+            var photo = post.Photos.FirstOrDefault(x => x.Id == photoId);
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain)
+            {
+                return BadRequest("This photo is already the main photo.");
+            }
+
+            // Find any existing main photo across all posts and set IsMain to false
+            var currentMainPhoto = user.Posts.SelectMany(p => p.Photos).FirstOrDefault(p => p.IsMain);
+            if (currentMainPhoto != null)
+            {
+                currentMainPhoto.IsMain = false;
+
+            }
+
+            // Set the new main photo
+            photo.IsMain = true;
+
+            // Save changes
+            if (await _postRepository.SaveAllAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Could not set the main photo.");
+        }
+
+
+        [HttpDelete("delete-photo/{postId}/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int postId, int photoId)
+        {
+            var post = await _postRepository.GetPostByIdAsync(postId);
+            if (post == null) return NotFound();
+
+            var username = User.GetUsername();
+            if (post.User.UserName != username) return Unauthorized();
+
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            if (user == null) return Unauthorized();
+
+            if (post.Photos.Count == 1) return BadRequest("Can't delete the only photo");
+
+            var photo = post.Photos.FirstOrDefault(x => x.Id == photoId);
+            if (photo == null) return NotFound();
+
+            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            post.Photos.Remove(photo);
+
+            if (await _postRepository.SaveAllAsync()) return Ok();
+
+            return BadRequest("Couldn't delete photo");
+
+        }
+
+
 
     }
 }

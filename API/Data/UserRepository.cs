@@ -44,9 +44,15 @@ namespace API.Data
             .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
         }
+        public async Task<IEnumerable<UserInfoDto>> GetUsersInfo()
+        {
+            return await _context.Users
+            .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
 
 
-        //will delete them later
+
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
@@ -55,7 +61,7 @@ namespace API.Data
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
-            // .Include(p => p.Photos)
+            .Include(p => p.Posts)
             .SingleOrDefaultAsync(u => u.UserName == username);
         }
 
@@ -64,7 +70,7 @@ namespace API.Data
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
             return await _context.Users
-            // .Include(p => p.Photos)
+            .Include(p => p.Posts)
             .ToListAsync();
         }
 

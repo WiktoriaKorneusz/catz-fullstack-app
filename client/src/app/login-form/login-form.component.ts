@@ -27,7 +27,7 @@ export class LoginFormComponent {
     console.log(this.model);
     this.accountService.login(this.model).subscribe({
       next: () => {
-        this.router.navigateByUrl('/users');
+        this.router.navigateByUrl('/user');
         this.toastr.success('Logged in successfully');
       },
       error: (error) => {

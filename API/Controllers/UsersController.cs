@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
+using API.Extensions;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -52,7 +53,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.GetUsername();
             var user = await _userRepository.GetUserByUsernameAsync(username);
             if (user == null) return NotFound();
 

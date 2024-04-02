@@ -2,7 +2,7 @@
 <div *ngIf="isUserAuthor" class="relative">
 
     
-  <button class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around 
+  <button (click)="deletePost()" class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around 
                   fixed bottom-0  right-8 rounded-md sm:bottom-5
                   mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10">
     <div class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full  bg-red-500 hover:bg-red-600 transition duration-200 ease-in-out">
