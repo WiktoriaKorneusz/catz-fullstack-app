@@ -54,8 +54,9 @@ export class PostDetailComponent {
     for (const photo of this.post?.photos) {
       this.photos.push(
         new ImageItem({
-          src: photo.url,
-          thumb: photo.url,
+          src: 'https://res.cloudinary.com/wkorneusz/image/upload/' + photo.url,
+          thumb:
+            'https://res.cloudinary.com/wkorneusz/image/upload/' + photo.url,
         })
       );
     }

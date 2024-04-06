@@ -17,6 +17,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
+import { MembersService } from '../../_services/members.service';
 
 @Component({
   selector: 'app-post-edit',
@@ -51,6 +52,7 @@ export class PostEditComponent {
   constructor(
     private accountService: AccountService,
     private postsService: PostsService,
+    private membersService: MembersService,
     private router: Router,
     private toastr: ToastrService,
     private route: ActivatedRoute
@@ -148,7 +150,7 @@ export class PostEditComponent {
     const postId = this.post?.id;
     if (!postId) return;
 
-    this.postsService.setMainPhoto(postId, id).subscribe({
+    this.membersService.setMainPhoto(postId, id).subscribe({
       next: (_) => {
         this.toastr.success('Main photo changed successfully.');
         this.loadPost();

@@ -4,6 +4,7 @@ import { MembersService } from '../../_services/members.service';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { UserInfo } from '../../_models/userInfo';
 
 @Component({
   selector: 'app-user-list',
@@ -13,7 +14,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent {
-  users$: Observable<Member[]> | undefined;
+  users$: Observable<UserInfo[]> | undefined;
   constructor(private memberService: MembersService) {}
 
   ngOnInit(): void {

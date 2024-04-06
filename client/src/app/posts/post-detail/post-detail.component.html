@@ -26,7 +26,7 @@
 <div *ngIf="post" class=" mt-8 flex justify-center mb-14">
     <div class="mx-auto max-w-md bg-blue-200 p-5 shadow-2xl shadow-blue-800 rounded-lg ">
       <div class="flex items-center px-1 py-3">
-        <img routerLink="/users/{{post.userName}}" class="h-12 w-12 rounded-full cursor-pointer" src="{{post.mainPhotoUrl || './assets/user.png'}}"/>
+        <img routerLink="/users/{{post.userName}}" class="h-12 w-12 rounded-full cursor-pointer" src="{{ post.mainPhotoUrl ? 'https://res.cloudinary.com/wkorneusz/image/upload/' + post.mainPhotoUrl : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg' }}" />
         <div class="ml-3 ">
           <h1 routerLink="/users/{{post.userName}}" class="text-slate-900 font-bold text-3xl cursor-pointer leading-8 ">{{post.knownAs}} <span class="text-base text-slate-500  leading-6 font-normal mb-2">
             ({{post.pronouns}})</span></h1>

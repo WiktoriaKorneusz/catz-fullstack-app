@@ -69,6 +69,9 @@ namespace API.Controllers
             var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return Unauthorized();
 
+            if (photos.Count == 0) return BadRequest("No photos selected");
+            if (photos.Count > 5) return BadRequest("You can't upload more than 5 photos");
+
             List<Photo> photoList = new List<Photo>();
 
             foreach (var file in photos)
@@ -222,9 +225,12 @@ namespace API.Controllers
             photo.IsMain = true;
 
             // Save changes
-            if (await _postRepository.SaveAllAsync())
+            if (await _userRepository.SaveAllAsync())
             {
+                await _postRepository.SaveAllAsync();
+
                 return NoContent();
+
             }
 
             return BadRequest("Could not set the main photo.");

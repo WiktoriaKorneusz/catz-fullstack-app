@@ -18,6 +18,10 @@ namespace API.Interfaces
         Task<IEnumerable<MemberDto>> GetMembersAsync();
         Task<MemberDto> GetMemberByUsernameAsync(string username);
         Task<UserInfoDto> GetUserInfo(int id);
+        Task<IEnumerable<UserInfoDto>> GetUsersInfo();
+
+        Task<IEnumerable<PhotoDto>> GetUserPhotosAsync(int userId);
+        Task<Photo> GetUserPhotoAsync(int photoId);
 
 
 

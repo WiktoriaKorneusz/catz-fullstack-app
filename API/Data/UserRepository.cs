@@ -41,12 +41,16 @@ namespace API.Data
         {
             return await _context.Users
             .Where(u => u.Id == id)
+
             .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
         }
         public async Task<IEnumerable<UserInfoDto>> GetUsersInfo()
         {
             return await _context.Users
+                        .Include(u => u.Posts)
+
+
             .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
         }
@@ -83,5 +87,33 @@ namespace API.Data
         {
             _context.Entry(user).State = EntityState.Modified;
         }
+
+        public async Task<IEnumerable<PhotoDto>> GetUserPhotosAsync(int userId)
+        {
+            var userPosts = await _context.Posts
+            .Where(p => p.UserId == userId)
+            .Include(p => p.Photos)
+            .ToListAsync();
+
+            var userPhotos = userPosts.SelectMany(post => post.Photos)
+            .Select(photo => new PhotoDto
+            {
+                Id = photo.Id,
+                Url = photo.Url,
+                IsMain = photo.IsMain
+            });
+
+            return userPhotos;
+
+        }
+
+        public async Task<Photo> GetUserPhotoAsync(int photoId)
+        {
+            return await _context.Photos
+            .FirstOrDefaultAsync(p => p.Id == photoId);
+
+        }
+
+
     }
 }

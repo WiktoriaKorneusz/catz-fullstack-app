@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { PostDisplay } from '../_models/postDisplay';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,16 @@ export class PostsService {
     );
   }
 
+  addPost(post: PostDisplay, files: FileList) {
+    const formData = new FormData();
+    formData.append('content', post.content);
+    Array.from(files).forEach((file) => {
+      formData.append('photos', file, file.name);
+    });
+
+    return this.http.post(this.baseUrl + 'posts/add-post', formData);
+  }
+
   deletePost(id: number) {
     return this.http.delete(this.baseUrl + 'posts/delete-post/' + id);
   }
@@ -49,13 +60,6 @@ export class PostsService {
   deletePhoto(postId: number, photoId: number) {
     return this.http.delete(
       this.baseUrl + 'posts/delete-photo/' + postId + '/' + photoId
-    );
-  }
-
-  setMainPhoto(postId: number, photoId: number) {
-    return this.http.put(
-      this.baseUrl + 'posts/set-main-photo/' + postId + '/' + photoId,
-      {}
     );
   }
 }

@@ -9,11 +9,11 @@
                     
                         <div class="bg-blue-200 flex shadow-lg items-center justify-center image overflow-hidden rounded-md">
                         
-                            <img class="object-fit" src="{{photo.url}}" alt="">
+                            <img class="object-fit" src="https://res.cloudinary.com/wkorneusz/image/upload/{{photo.url}}" alt="">
                         </div>
                         
-                        <div (click)="setMainPhoto(photo.id)" class="mt-2 flex justify-between">
-                            <button type="button" class="py-1  shadow-sm shadow-blue-700 px-2 text-sm text-slate-100 rounded-md  bg-blue-500 hover:bg-blue-600 transition duration-200 ease-in-out mr-2">
+                        <div  class="mt-2 flex justify-between">
+                            <button (click)="setMainPhoto(photo.id)" type="button" class="py-1  shadow-sm shadow-blue-700 px-2 text-sm text-slate-100 rounded-md  bg-blue-500 hover:bg-blue-600 transition duration-200 ease-in-out mr-2">
                                 <fa-icon [icon]="faUserCircle" class="mr-2"></fa-icon>
                                 Main
                             </button>

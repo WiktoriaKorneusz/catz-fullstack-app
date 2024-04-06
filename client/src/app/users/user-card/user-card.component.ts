@@ -3,6 +3,7 @@ import { Member } from '../../_models/member';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from '@angular/router';
+import { UserInfo } from '../../_models/userInfo';
 
 @Component({
   selector: 'app-user-card',
@@ -16,5 +17,5 @@ export class UserCardComponent {
   faUserPlus = faUserPlus;
 
   // @Input() user: Member = {} as Member;
-  @Input() user: Member | undefined;
+  @Input() user: UserInfo | undefined;
 }

@@ -22,7 +22,9 @@ namespace API.Helpers
                 .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.User.Posts.SelectMany(p => p.Photos)
                     .FirstOrDefault(p => p.IsMain).Url));
 
-            CreateMap<User, UserInfoDto>();
+            CreateMap<User, UserInfoDto>()
+                .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Posts.SelectMany(p => p.Photos)
+                    .FirstOrDefault(p => p.IsMain).Url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<UserUpdateDto, User>();
             CreateMap<PostUpdateDto, Post>();
