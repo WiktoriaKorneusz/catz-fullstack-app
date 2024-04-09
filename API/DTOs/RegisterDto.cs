@@ -10,8 +10,33 @@ namespace API.DTOs
     {
         [Required]
         public string Username { get; set; }
+
+        [Required]
+        public DateOnly? DateOfBirth { get; set; }
+        // it must be optional in order for required to work
+
+        [Required]
+        public string KnownAs { get; set; }
+
+        [Required]
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public string Pronouns { get; set; }
+
+        [Required]
+        public string Interests { get; set; }
+
+        [Required]
+        public string City { get; set; }
+
+        [Required]
+        public string Country { get; set; }
+
         [Required]
         [StringLength(20, MinimumLength = 6)]
         public string Password { get; set; }
+
+
     }
 }

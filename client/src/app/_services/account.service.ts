@@ -30,21 +30,17 @@ export class AccountService {
 
   register(model: any) {
     // const newUser = {username: model.username, password: model.password};
-    return this.http
-      .post<User>(this.baseUrl + 'account/register', {
-        username: model.username,
-        password: model.password,
+    console.log(model);
+    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+      map((response: User) => {
+        const user = response;
+        if (user && this.isLocalStorageAvailable) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSource.next(user);
+        }
+        // return user;
       })
-      .pipe(
-        map((response: User) => {
-          const user = response;
-          if (user && this.isLocalStorageAvailable) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUserSource.next(user);
-          }
-          // return user;
-        })
-      );
+    );
   }
 
   setCurrentUser(user: User) {
