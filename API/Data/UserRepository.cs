@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -45,14 +46,30 @@ namespace API.Data
             .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<UserInfoDto>> GetUsersInfo()
+
+        //get users page
+        public async Task<PagedList<UserInfoDto>> GetUsersInfo(UserParams userParams)
         {
-            return await _context.Users
-                        .Include(u => u.Posts)
+            var query = _context.Users.AsQueryable();
 
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            .ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            var minDateOfBirth = today.AddYears(-userParams.MaximalAge - 1);
+            var maxDateOfBirth = today.AddYears(-userParams.MinimalAge);
+
+            query = query.Where(u => u.DateOfBirth >= minDateOfBirth && u.DateOfBirth <= maxDateOfBirth);
+            query = userParams.OrderBy switch
+            {
+                1 => query.OrderByDescending(u => u.Created),
+                2 => query.OrderBy(u => u.UserName),
+                3 => query.OrderByDescending(u => u.UserName),
+                4 => query.OrderByDescending(u => u.DateOfBirth),
+                5 => query.OrderBy(u => u.DateOfBirth),
+                _ => query.OrderByDescending(u => u.LastActive),
+            };
+
+            return await PagedList<UserInfoDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider), userParams.PageNumber, userParams.PageSize);
         }
 
 

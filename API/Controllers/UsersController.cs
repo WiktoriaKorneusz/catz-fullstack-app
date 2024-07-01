@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -40,10 +41,14 @@ namespace API.Controllers
             return Ok(users);
         }
 
+        //users in the client
         [HttpGet("infos")]
-        public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsersInfo()
+        public async Task<ActionResult<PagedList<UserInfoDto>>> GetUsersInfo([FromQuery] UserParams userParams)
         {
-            var users = await _userRepository.GetUsersInfo();
+            var currentUser = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            userParams.CurrentUsername = currentUser.UserName;
+            var users = await _userRepository.GetUsersInfo(userParams);
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
             return Ok(users);
         }
 
