@@ -67,9 +67,9 @@
           role="group"
         >
           <a
-            *ngIf="(userParams?.pageNumber ?? 0) > 1"
+            *ngIf="(this.memberService.userParams().pageNumber ?? 0) > 1"
             type="button"
-            (click)="changePage((userParams?.pageNumber ?? 1) - 1)"
+            (click)="changePage(this.memberService.userParams().pageNumber - 1)"
             class="rounded-l-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
           >
             Previous
@@ -79,9 +79,10 @@
             type="button"
             *ngIf="
               pagination &&
-              (userParams?.pageNumber ?? 0) < (pagination?.totalPages ?? 1)
+              (this.memberService.userParams().pageNumber ?? 0) <
+                (pagination?.totalPages ?? 1)
             "
-            (click)="changePage((userParams?.pageNumber ?? 1) + 1)"
+            (click)="changePage(this.memberService.userParams().pageNumber + 1)"
             class="rounded-r-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
           >
             Next

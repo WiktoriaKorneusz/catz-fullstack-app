@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, model } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Member } from '../_models/member';
@@ -6,27 +6,43 @@ import { map, of, tap } from 'rxjs';
 import { UserInfo } from '../_models/userInfo';
 import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MembersService {
   baseUrl = environment.apiUrl;
+  private http = inject(HttpClient);
   paginatedResult: PaginatedResult<UserInfo[]> = new PaginatedResult<
     UserInfo[]
   >();
-  // userParams = model<UserParams>(new UserParams());
+  // private AccountService = inject(AccountService);
+  // user = this.AccountService.currentUser$;
+  userParams = signal<UserParams>(new UserParams());
 
-  constructor(private http: HttpClient) {}
+  // constructor(private http: HttpClient) {}
 
-  getMembers(userParams: UserParams) {
+  resetUserParams() {
+    this.userParams.set(new UserParams());
+  }
+
+  // getUserParams() {
+  //   return this.userParams();
+  // }
+
+  setUserParams(params: UserParams) {
+    this.userParams.set(params);
+  }
+
+  getMembers() {
     let params = this.getPaginationHeaders(
-      userParams.pageNumber,
-      userParams.pageSize
+      this.userParams().pageNumber,
+      this.userParams().pageSize
     );
-    params = params.append('minimalAge', userParams.minimalAge);
-    params = params.append('maximalAge', userParams.maximalAge);
-    params = params.append('orderBy', userParams.orderBy);
+    params = params.append('minimalAge', this.userParams().minimalAge);
+    params = params.append('maximalAge', this.userParams().maximalAge);
+    params = params.append('orderBy', this.userParams().orderBy);
 
     console.log('Calling getMembers with params:', params.toString()); // Add this line
     return this.getPaginationResult<UserInfo[]>(

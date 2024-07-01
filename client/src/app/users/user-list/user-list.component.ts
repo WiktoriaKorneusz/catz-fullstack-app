@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Member } from '../../_models/member';
 import { MembersService } from '../../_services/members.service';
 import { UserCardComponent } from '../user-card/user-card.component';
@@ -22,17 +22,14 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
-export class UserListComponent {
-  // users$: Observable<UserInfo[]> | undefined;
-  // this.
+export class UserListComponent implements OnInit {
   users: UserInfo[] = [];
   pagination: Pagination | undefined;
-  userParams: UserParams | undefined;
   user: User | undefined;
 
   // slider
-  sliderMinValue: number = 0;
-  sliderMaxValue: number = 100;
+  sliderMinValue: number = this.memberService.userParams().minimalAge;
+  sliderMaxValue: number = this.memberService.userParams().maximalAge;
   sliderOptions: Options = {
     floor: 0,
     ceil: 100,
@@ -47,12 +44,11 @@ export class UserListComponent {
       }
     },
   };
-
+  // select
   orderBy: number = 0;
 
   constructor(
-    private memberService: MembersService,
-    private router: Router,
+    public memberService: MembersService,
     private accountService: AccountService
   ) {
     this.accountService.currentUser$.subscribe((user) => {
@@ -60,23 +56,15 @@ export class UserListComponent {
         this.user = user;
       }
     });
-    // this.userParams = this.memberService.getUserParams();
   }
 
   ngOnInit(): void {
-    // this.users$ = this.memberService.getMembers();
-    // console.log(this.members);
     this.loadMembers();
-
-    console.log(this.pagination);
+    this.orderBy = this.memberService.userParams().orderBy;
   }
 
   loadMembers() {
-    if (!this.userParams) {
-      this.userParams = new UserParams();
-    }
-
-    this.memberService.getMembers(this.userParams).subscribe({
+    this.memberService.getMembers().subscribe({
       next: (response) => {
         if (response.result && response.pagination) {
           this.users = response.result;
@@ -90,30 +78,24 @@ export class UserListComponent {
   }
 
   changePage(pageNumber: number) {
-    if (this.userParams && this.userParams?.pageNumber !== pageNumber) {
-      this.userParams.pageNumber = pageNumber;
-      this.sliderMinValue = this.userParams.minimalAge;
-      this.sliderMaxValue = this.userParams.maximalAge;
+    this.memberService.userParams().pageNumber = pageNumber;
+    this.sliderMinValue = this.memberService.userParams().minimalAge;
+    this.sliderMaxValue = this.memberService.userParams().maximalAge;
 
-      this.loadMembers();
-    }
+    this.loadMembers();
   }
   resetFilters() {
-    console.log('bonk');
-    if (this.user) {
-      this.userParams = new UserParams();
-      this.sliderMinValue = 0;
-      this.sliderMaxValue = 100;
-      this.loadMembers();
-    }
+    this.memberService.resetUserParams();
+    this.sliderMinValue = 0;
+    this.sliderMaxValue = 100;
+    this.orderBy = 0;
+    this.loadMembers();
   }
   loadParams() {
-    if (this.userParams === undefined) return;
-    this.userParams.minimalAge = this.sliderMinValue;
-    this.userParams.maximalAge = this.sliderMaxValue;
-    this.userParams.pageNumber = 1;
-    this.userParams.orderBy = this.orderBy;
-    console.log(this.userParams);
+    this.memberService.userParams().minimalAge = this.sliderMinValue;
+    this.memberService.userParams().maximalAge = this.sliderMaxValue;
+    this.memberService.userParams().pageNumber = 1;
+    this.memberService.userParams().orderBy = this.orderBy;
     this.loadMembers();
   }
 }
