@@ -22,7 +22,9 @@ namespace API.Models
         public string Interests { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
-        public List<Post> Posts { get; set; } = new();
+        public List<Post> Posts { get; set; } = [];
+        public List<UserFollow> Followers { get; set; } = []; //followed by
+        public List<UserFollow> Followings { get; set; } = []; //follows
         // public List<Photo> Photos { get; set; } = new();
 
         // public int GetAge()

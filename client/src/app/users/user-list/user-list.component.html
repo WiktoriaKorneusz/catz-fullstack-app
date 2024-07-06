@@ -5,7 +5,8 @@
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-3xl font-semibold leading-none text-blue-600">Users</h1>
       <h2 class="text-l font-semibold leading-none text-blue-500 mt-2">
-        {{ pagination?.totalItems }} users found
+        {{ memberService.paginatedResult()?.pagination?.totalItems ?? 0 }} users
+        found
       </h2>
     </div>
     <div class="flow-root">
@@ -57,38 +58,43 @@
       <ul role="list" class="divide-y divide-blue-300">
         <!-- <li *ngFor="let user of users$ | async" class="py-3 sm:py-4"> -->
 
-        <li *ngFor="let user of users" class="py-3 sm:py-4">
+        @for (user of memberService.paginatedResult()?.items; track user.id){
+        <li class="py-3 sm:py-4">
           <app-user-card [user]="user"></app-user-card>
         </li>
+        }
       </ul>
       <div class="max-w-lg mx-auto text-center mt-8">
         <div
           class="inline-flex gap-3 mb-5 justify-items-end rounded-lg"
           role="group"
         >
+          @if((this.memberService.paginatedResult()?.pagination?.currentPage ??
+          0) > 1){
           <a
-            *ngIf="(this.memberService.userParams().pageNumber ?? 0) > 1"
             type="button"
             (click)="changePage(this.memberService.userParams().pageNumber - 1)"
             class="rounded-l-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
           >
             Previous
           </a>
-
+          } @if ((this.memberService.paginatedResult()?.pagination?.currentPage
+          ?? 0) < (this.memberService.paginatedResult()?.pagination?.totalPages
+          ?? 0)) {
           <a
             type="button"
-            *ngIf="
-              pagination &&
-              (this.memberService.userParams().pageNumber ?? 0) <
-                (pagination?.totalPages ?? 1)
-            "
             (click)="changePage(this.memberService.userParams().pageNumber + 1)"
             class="rounded-r-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
           >
-            Next
-          </a>
+            Next </a
+          >}
         </div>
       </div>
     </div>
   </div>
 </div>
+<!-- *ngIf="
+              pagination &&
+              (this.memberService.userParams().pageNumber ?? 0) <
+                (pagination?.totalPages ?? 1)
+            " -->

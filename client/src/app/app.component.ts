@@ -38,34 +38,34 @@ export class AppComponent implements OnInit {
     // this.getUsers();
     this.setUser();
   }
-  testInterceptor() {
-    this.http.get('http://localhost:5248/api/users').subscribe((res) => {
-      console.log(res);
-    });
-  }
+  // testInterceptor() {
+  //   this.http.get('http://localhost:5248/api/users').subscribe((res) => {
+  //     console.log(res);
+  //   });
+  // }
 
   setUser() {
     // const user : User = JSON.parse(localStorage.getItem('user')!);
-    if (this.isLocalStorageAvailable) {
-      const user: User = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log(user);
-      if (user && Object.keys(user).length > 0)
-        this.accountService.setCurrentUser(user);
-      // const user: User = JSON.parse(userString);
-      else return;
-    }
+    if (!this.isLocalStorageAvailable) return;
+
+    const user: User = JSON.parse(localStorage.getItem('user') || '{}');
+    // console.log(user);
+    if (user && Object.keys(user).length > 0)
+      this.accountService.setCurrentUser(user);
+    // const user: User = JSON.parse(userString);
+    else return;
   }
 
-  getUsers() {
-    this.http.get('http://localhost:5248/api/users').subscribe({
-      next: (response) => (this.users = response),
-      // next: (response) => console.log(response),
-      error: (error) => {
-        console.log(error);
-      },
-      complete: () => {
-        console.log('users request complete');
-      },
-    });
-  }
+  // getUsers() {
+  //   this.http.get('http://localhost:5248/api/users').subscribe({
+  //     next: (response) => (this.users = response),
+  //     // next: (response) => console.log(response),
+  //     error: (error) => {
+  //       console.log(error);
+  //     },
+  //     complete: () => {
+  //       console.log('users request complete');
+  //     },
+  //   });
+  // }
 }

@@ -18,7 +18,7 @@ export const basicInterceptor: HttpInterceptorFn = (
   const toastrService = inject(ToastrService);
   const router = inject(Router);
   // toastrService.success('Basic Intercept');
-  console.log('Basic Intercept');
+  // console.log('Basic Intercept');
   return next(request).pipe(
     catchError((error) => {
       toastrService.error(error.status + ': ' + error.statusText);

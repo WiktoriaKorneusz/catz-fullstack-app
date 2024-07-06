@@ -1,20 +1,25 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from '../../environments/environment';
+import { FollowsService } from './follows.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   baseUrl = environment.apiUrl;
-  //(null)
+  private followsService = inject(FollowsService);
+  private http = inject(HttpClient);
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
   private isLocalStorageAvailable = typeof localStorage !== 'undefined';
 
-  constructor(private http: HttpClient) {}
+  // constructor(
+  //   private http: HttpClient,
+  //   private followsService: FollowsService
+  // ) {}
 
   login(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
@@ -44,8 +49,9 @@ export class AccountService {
   }
 
   setCurrentUser(user: User) {
-    console.log(user);
+    // console.log('bonkkkk');
     this.currentUserSource.next(user);
+    this.followsService.getFolloweesIds();
   }
 
   logout() {

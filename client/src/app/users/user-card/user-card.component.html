@@ -1,24 +1,40 @@
 <div class="flex items-center space-x-4">
-    <div class="flex-shrink-0">
-        <img loading="lazy" decoding="async" class="w-12 h-12 rounded-full" src="{{ user?.mainPhotoUrl ? 'https://res.cloudinary.com/wkorneusz/image/upload/' + user?.mainPhotoUrl : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg' }}" 
-        alt="{{user?.knownAs}} image">
-    </div>
-    <div class="flex-1 min-w-0">
-        <h3 class="text-lg max-w-fit font-medium hover:underline  text-blue-500 hover:cursor-pointer truncate hover:underline-offset-2">
-            <a routerLink="/users/{{user?.userName}}">
-
-                &commat;{{user?.userName}}
-            </a>
-        </h3>
-        <p class="text-sm text-slate-400 truncate ">
-            {{user?.knownAs}} ({{user?.pronouns}})
-        </p>
-    </div>
-    <div class="flex justify-items-end border rounded-lg border-blue-300 bg-blue-200 shadow-md shadow-slate-400 transition hover:shadow-sm">
-        
-
-            <a routerLink="/users/{{user?.userName}}" routerLinkActive="text-blue-950" class=" relative text-xl max-w-full py-2 px-4 leading-normal  no-underline hover:bg-grey-dark text-slate-400 transition hover:text-blue-500 hover:cursor-pointer"><fa-icon [icon]="faUserPlus"></fa-icon></a>
-        
-
-    </div>
+  <div class="flex-shrink-0">
+    <img
+      loading="lazy"
+      decoding="async"
+      class="w-12 h-12 rounded-full"
+      src="{{
+        user?.mainPhotoUrl
+          ? 'https://res.cloudinary.com/wkorneusz/image/upload/' +
+            user?.mainPhotoUrl
+          : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg'
+      }}"
+      alt="{{ user?.knownAs }} image"
+    />
+  </div>
+  <div class="flex-1 min-w-0">
+    <h3
+      class="text-lg max-w-fit font-medium hover:underline text-blue-500 hover:cursor-pointer truncate hover:underline-offset-2"
+    >
+      <a routerLink="/users/{{ user?.userName }}">
+        &commat;{{ user?.userName }}
+      </a>
+    </h3>
+    <p class="text-sm text-slate-400 truncate">
+      {{ user?.knownAs }} ({{ user?.pronouns }})
+    </p>
+  </div>
+  <div
+    class="flex justify-items-end border rounded-lg border-blue-300 bg-blue-200 shadow-md shadow-slate-400 transition hover:shadow-sm"
+  >
+    <button
+      (click)="toggleFollow()"
+      routerLinkActive="text-blue-950"
+      class="relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 transition hover:text-blue-500 hover:cursor-pointer"
+    >
+      @if (isFollowed()) { <fa-icon [icon]="faUserMinus"></fa-icon> } @else{
+      <fa-icon [icon]="faUserPlus"></fa-icon> }
+    </button>
+  </div>
 </div>

@@ -23,9 +23,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit {
-  users: UserInfo[] = [];
-  pagination: Pagination | undefined;
+  // users: UserInfo[] = [];
+  // pagination: Pagination | undefined;
   user: User | undefined;
+  // bonk: any;
 
   // slider
   sliderMinValue: number = this.memberService.userParams().minimalAge;
@@ -64,17 +65,9 @@ export class UserListComponent implements OnInit {
   }
 
   loadMembers() {
-    this.memberService.getMembers().subscribe({
-      next: (response) => {
-        if (response.result && response.pagination) {
-          this.users = response.result;
-          this.pagination = response.pagination;
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+    this.memberService.getMembers();
+
+    console.log(this.memberService.paginatedResult()?.pagination);
   }
 
   changePage(pageNumber: number) {

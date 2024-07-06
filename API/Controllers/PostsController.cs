@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
     public class PostsController : BaseController
     {
         private readonly IPostRepository _postRepository;
