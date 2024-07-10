@@ -11,7 +11,9 @@ namespace API.Helpers
         {
             CreateMap<User, MemberDto>()
             // .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url))
-                .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Posts.SelectMany(p => p.Photos)
+                .ForMember(dest => dest.MainPhotoUrl, opt => opt
+                    .MapFrom(src => src.Posts
+                    .SelectMany(p => p.Photos)
                     .FirstOrDefault(p => p.IsMain).Url))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Post, PostDto>();
@@ -29,6 +31,15 @@ namespace API.Helpers
             CreateMap<UserUpdateDto, User>();
             CreateMap<PostUpdateDto, Post>();
             CreateMap<RegisterDto, User>();
+            CreateMap<Message, MessageDto>()
+                .ForMember(dest => dest.RecipientProfilePicture, opt => opt
+                    .MapFrom(src => src.Recipient.Posts
+                    .SelectMany(p => p.Photos)
+                    .FirstOrDefault(p => p.IsMain).Url))
+                .ForMember(dest => dest.SenderProfilePicture, opt => opt
+                    .MapFrom(src => src.Sender.Posts
+                    .SelectMany(p => p.Photos)
+                    .FirstOrDefault(p => p.IsMain).Url));
         }
 
     }

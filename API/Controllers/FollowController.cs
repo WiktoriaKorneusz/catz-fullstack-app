@@ -71,9 +71,9 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetFollows([FromQuery] FollowsParams followParams)
         {
             followParams.UserId = User.GetUserId();
-            var users = await followRepository.GetFollows(followParams);
-            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
-            return Ok(users);
+            var follows = await followRepository.GetFollows(followParams);
+            Response.AddPaginationHeader(new PaginationHeader(follows.CurrentPage, follows.PageSize, follows.TotalCount, follows.TotalPages));
+            return Ok(follows);
         }
     }
 }

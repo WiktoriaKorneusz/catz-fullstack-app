@@ -17,6 +17,7 @@ import { formChangesGuardGuard } from './_guards/form-changes-guard.guard';
 import { PostEditComponent } from './posts/post-edit/post-edit.component';
 import { PostAddComponent } from './posts/post-add/post-add.component';
 import { UserDeleteComponent } from './users/user-delete/user-delete.component';
+import { UserMessagesComponent } from './users/user-messages/user-messages.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -34,8 +35,9 @@ export const routes: Routes = [
       },
       { path: 'user/delete', component: UserDeleteComponent },
       { path: 'user', component: UserDetailComponent },
-      { path: 'lists', component: ListsComponent },
+      { path: 'follows', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+      { path: 'messages/:id', component: UserMessagesComponent },
       { path: 'posts/add', component: PostAddComponent },
       { path: 'posts/:id', component: PostDetailComponent },
       {

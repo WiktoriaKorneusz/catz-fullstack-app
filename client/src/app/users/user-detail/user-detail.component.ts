@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Member } from '../../_models/member';
 import { MembersService } from '../../_services/members.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -8,6 +8,10 @@ import {
   faPenToSquare,
   faPlus,
   faTrash,
+  faUserPlus,
+  faUserMinus,
+  faMessage,
+  faComment,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Post } from '../../_models/post';
@@ -15,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { User } from '../../_models/user';
 import { AccountService } from '../../_services/account.service';
 import { take } from 'rxjs';
+import { FollowsService } from '../../_services/follows.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -24,6 +29,11 @@ import { take } from 'rxjs';
   styleUrl: './user-detail.component.css',
 })
 export class UserDetailComponent {
+  private followsService = inject(FollowsService);
+  isFollowed: boolean = false;
+  faComment = faComment;
+  faUserPlus = faUserPlus;
+  faUserMinus = faUserMinus;
   faUser = faUser;
   faTrash = faTrash;
   faPlus = faPlus;
@@ -43,6 +53,12 @@ export class UserDetailComponent {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: (user) => {
         this.loggedUser = user;
+        // computed(() => {
+        //   const userId = this.user?.id ?? null;
+        //   return (
+        //     userId !== null && this.followsService.followeesIds().includes(userId)
+        //   );
+        // });
       },
     });
   }
@@ -64,7 +80,9 @@ export class UserDetailComponent {
         if (this.loggedUser?.username === username) {
           this.isUserLoggedUser = true;
         }
-        console.log(this.isUserLoggedUser); // Log here after assignment
+        this.isFollowed =
+          this.user.id !== null &&
+          this.followsService.followeesIds().includes(this.user.id);
       },
       error: (err) => console.log(err),
     });
@@ -81,5 +99,23 @@ export class UserDetailComponent {
       },
       error: (err) => console.log(err),
     });
+  }
+
+  toggleFollow() {
+    const userId = this.user?.id ?? null;
+    if (userId != null) {
+      this.followsService.toggleFollow(userId).subscribe({
+        next: () => {
+          if (this.isFollowed) {
+            this.followsService.followeesIds.update((ids) =>
+              ids.filter((x) => x !== userId)
+            );
+          } else {
+            this.followsService.followeesIds.update((ids) => [...ids, userId]);
+          }
+          this.isFollowed = !this.isFollowed;
+        },
+      });
+    }
   }
 }

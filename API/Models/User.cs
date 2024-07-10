@@ -25,6 +25,9 @@ namespace API.Models
         public List<Post> Posts { get; set; } = [];
         public List<UserFollow> Followers { get; set; } = []; //followed by
         public List<UserFollow> Followings { get; set; } = []; //follows
+
+        public List<Message> MessagesSent { get; set; } = [];
+        public List<Message> MessagesReceived { get; set; } = [];
         // public List<Photo> Photos { get; set; } = new();
 
         // public int GetAge()
