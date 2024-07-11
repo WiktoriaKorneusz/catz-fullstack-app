@@ -1,0 +1,35 @@
+<ul role="list" class="divide-y divide-blue-300">
+  @for (user of users; track $index) { @if ( user.username !=
+  loggedUser?.username) {
+  <li class="py-3 sm:py-4">
+    <div class="flex items-center space-x-4">
+      <div class="flex-1 min-w-0">
+        <h3
+          class="text-xl mb-1 max-w-fit font-medium hover:underline text-blue-500 hover:cursor-pointer truncate hover:underline-offset-2"
+        >
+          <a [routerLink]="['/messages', user.username]">
+            &commat;{{ user.username }}
+          </a>
+        </h3>
+        <p class="text-sm text-slate-400 truncate">
+          {{ user.roles }}
+        </p>
+      </div>
+      <div class="w-6/12 text-right">
+        <input
+          type="text"
+          #roleInput
+          placeholder="roles"
+          class="w-5/12 rounded mb-2 px-1 text-sm"
+          value="{{ user.roles }}"
+        />
+        <div
+          class="flex text-right items-center justify-center rounded transition hover:shadow-sm bg-blue-500 text-sm hover:bg-blue-700 text-white font-bold px-2 ml-auto duration-300 cursor-pointer w-5/12"
+        >
+          <button (click)="updateRoles(user.id, roleInput.value)">Edit</button>
+        </div>
+      </div>
+    </div>
+  </li>
+  } }
+</ul>

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class MessagesController(IMapper mapper, IMessageRepository messageRepository, IUserRepository userRepository) : BaseController
+    public class MessagesController(IMessageRepository messageRepository, IUserRepository userRepository) : BaseController
     {
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(MessageCreateDto messageCreateDto)

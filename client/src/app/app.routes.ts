@@ -18,6 +18,8 @@ import { PostEditComponent } from './posts/post-edit/post-edit.component';
 import { PostAddComponent } from './posts/post-add/post-add.component';
 import { UserDeleteComponent } from './users/user-delete/user-delete.component';
 import { UserMessagesComponent } from './users/user-messages/user-messages.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { adminGuard } from './_guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -44,6 +46,11 @@ export const routes: Routes = [
         path: 'posts/edit/:id',
         component: PostEditComponent,
         canDeactivate: [formChangesGuardGuard],
+      },
+      {
+        path: 'admin',
+        component: AdminPanelComponent,
+        canActivate: [adminGuard],
       },
     ],
   },

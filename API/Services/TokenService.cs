@@ -7,23 +7,26 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService(IConfiguration config, UserManager<User> userManager, RoleManager<Role> roleManager) : ITokenService
     {
-        private readonly SymmetricSecurityKey _key;
-        public TokenService(IConfiguration config)
-        {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-        }
-        public string CreateToken(User user)
+        private readonly SymmetricSecurityKey _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+
+        public async Task<string> CreateToken(User user)
         {
             var claims = new List<Claim>{
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
             };
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
 
             var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 

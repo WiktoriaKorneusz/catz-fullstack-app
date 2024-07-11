@@ -7,11 +7,12 @@ import {
   faCircleUser,
   faAddressBook,
 } from '@fortawesome/free-solid-svg-icons';
+import { IsAuthenticatedDirective } from '../_directives/is-authenticated.directive';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FontAwesomeModule, RouterModule],
+  imports: [FontAwesomeModule, RouterModule, IsAuthenticatedDirective],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
