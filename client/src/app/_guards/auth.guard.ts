@@ -14,12 +14,13 @@ export const authGuard: CanActivateFn = (route, state) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (user && Object.keys(user).length > 0) {
       // console.log('not null');
-      toastr.info(user.username + ' is logged in');
+      // toastr.info(user.username + ' is logged in');
       // accountService.setCurrentUser(user);
       return true;
     } else {
       // console.log('null');
-      toastr.error('You have to login to access this page');
+      // toastr.error('You have to login to access this page');
+      return false;
     }
   }
   // accountService.setCurrentUser(user);

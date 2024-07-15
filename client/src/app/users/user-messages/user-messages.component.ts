@@ -17,6 +17,8 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import { Toast, ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { MembersService } from '../../_services/members.service';
+import { User } from '../../_models/user';
 
 @Component({
   selector: 'app-user-messages',
@@ -26,15 +28,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-messages.component.css',
 })
 export class UserMessagesComponent implements OnInit {
-  private messageService = inject(MessageService);
+  messageService = inject(MessageService);
   toastr = inject(ToastrService);
   accountService = inject(AccountService);
-  currentUsername: string | undefined;
+  membersService = inject(MembersService);
+  currentUser: User | undefined;
   private route = inject(ActivatedRoute);
   userId = Number(this.route.snapshot.paramMap.get('id'));
   targetUsername = '';
   messageToSend = '';
-  messages: Message[] = [];
+  // messages: Message[] = [];
   faArrowRight = faArrowRight;
   faTrash = faTrash;
   faFloppyDisk = faFloppyDisk;
@@ -42,26 +45,35 @@ export class UserMessagesComponent implements OnInit {
   faEyeSlash = faEyeSlash;
 
   ngOnInit(): void {
-    this.loadMessages();
+    // this.loadMessages();
+    this.membersService.getMemberbyId(this.userId.toString()).subscribe({
+      next: (member) => {
+        if (!member) return;
+        this.targetUsername = member.userName;
+      },
+    });
     this.accountService.currentUser$.subscribe({
       next: (user) => {
-        this.currentUsername = user?.username;
+        if (user == null) return;
+        this.currentUser = user;
       },
     });
+
+    console.log(this.currentUser);
+    console.log(this.userId);
+    if (!this.currentUser) return;
+    this.messageService.createHubConnection(this.currentUser, this.userId);
   }
 
-  loadMessages(): void {
-    if (!this.userId) return;
-    this.messageService.getMessageThread(this.userId).subscribe({
-      next: (messages) => {
-        this.messages = messages;
-        this.targetUsername =
-          this.messages[0].senderId == this.userId
-            ? this.messages[0].senderUsername
-            : this.messages[0].recipientUsername;
-      },
-    });
-  }
+  // loadMessages(): void {
+  //   if (!this.userId) return;
+  //   this.messageService.getMessageThread(this.userId).subscribe({
+  //     next: (messages) => {
+  //       this.messages = messages;
+  //
+  //     },
+  //   });
+  // }
 
   copyMessageToClipboard(message: string) {
     navigator.clipboard
@@ -79,28 +91,41 @@ export class UserMessagesComponent implements OnInit {
         });
       });
   }
+  // via api call
+  // sendMessage() {
+  //   this.messageService.sendMessage(this.userId, this.messageToSend).subscribe({
+  //     next: (message) => {
+  //       this.messages.push(message);
+  //       this.messageToSend = '';
+  //     },
+  //     error: (err) =>
+  //       this.toastr.error(err.Message, 'Failed to send message', {
+  //         timeOut: 1000,
+  //       }),
+  //   });
+  // }
+
   sendMessage() {
-    this.messageService.sendMessage(this.userId, this.messageToSend).subscribe({
-      next: (message) => {
-        this.messages.push(message);
+    this.messageService
+      .sendMessage(this.userId, this.messageToSend)
+      .then(() => {
         this.messageToSend = '';
-      },
-      error: (err) =>
-        this.toastr.error(err.Message, 'Failed to send message', {
-          timeOut: 1000,
-        }),
-    });
+      });
   }
 
-  deleteMessage(id: number) {
-    this.messageService.deleteMessage(id).subscribe({
-      next: () => {
-        this.messages = this.messages.filter((m) => m.id !== id);
-      },
-      error: (err) =>
-        this.toastr.error(err.Message, 'Failed to delete message', {
-          timeOut: 1000,
-        }),
-    });
+  // deleteMessage(id: number) {
+  //   this.messageService.deleteMessage(id).subscribe({
+  //     next: () => {
+  //       this.messages = this.messages.filter((m) => m.id !== id);
+  //     },
+  //     error: (err) =>
+  //       this.toastr.error(err.Message, 'Failed to delete message', {
+  //         timeOut: 1000,
+  //       }),
+  //   });
+  // }
+
+  ngOnDestroy() {
+    this.messageService.stopHubConnection();
   }
 }

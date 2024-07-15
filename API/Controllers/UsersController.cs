@@ -41,6 +41,14 @@ namespace API.Controllers
             return Ok(users);
         }
 
+        [HttpGet("get-by-id/{id}")]
+        public async Task<ActionResult<MemberDto>> GetUserById(int id)
+        {
+            var user = await _userRepository.GetUserInfo(id);
+            return Ok(user);
+        }
+
+
         //users in the client
         [HttpGet("infos")]
         public async Task<ActionResult<PagedList<UserInfoDto>>> GetUsersInfo([FromQuery] UserParams userParams)

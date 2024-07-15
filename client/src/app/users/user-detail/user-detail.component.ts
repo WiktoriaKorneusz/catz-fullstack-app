@@ -12,6 +12,7 @@ import {
   faUserMinus,
   faMessage,
   faComment,
+  faCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Post } from '../../_models/post';
@@ -20,6 +21,7 @@ import { User } from '../../_models/user';
 import { AccountService } from '../../_services/account.service';
 import { take } from 'rxjs';
 import { FollowsService } from '../../_services/follows.service';
+import { PresenceService } from '../../_services/presence.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -30,6 +32,8 @@ import { FollowsService } from '../../_services/follows.service';
 })
 export class UserDetailComponent {
   private followsService = inject(FollowsService);
+  presenceService = inject(PresenceService);
+
   isFollowed: boolean = false;
   faComment = faComment;
   faUserPlus = faUserPlus;
@@ -39,7 +43,9 @@ export class UserDetailComponent {
   faPlus = faPlus;
   faImage = faImage;
   faPenToSquare = faPenToSquare;
-  user: Member | undefined;
+  faCircle = faCircle;
+
+  user: Member = {} as Member;
   loggedUser: User | null = null;
   posts: Post[] = [];
   isUserLoggedUser: boolean = false;

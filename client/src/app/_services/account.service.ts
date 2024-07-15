@@ -4,6 +4,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from '../../environments/environment';
 import { FollowsService } from './follows.service';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ import { FollowsService } from './follows.service';
 export class AccountService {
   baseUrl = environment.apiUrl;
   private followsService = inject(FollowsService);
+  private presenceService = inject(PresenceService);
   private http = inject(HttpClient);
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
@@ -59,12 +61,14 @@ export class AccountService {
     this.currentUserSource.next(user);
     // console.log(user);
     this.followsService.getFolloweesIds();
+    this.presenceService.createHubConnection(user);
   }
 
   logout() {
     if (this.isLocalStorageAvailable) {
       localStorage.removeItem('user');
       this.currentUserSource.next(null);
+      this.presenceService.stopHubConnection();
     }
   }
 

@@ -23,9 +23,10 @@ export class IsAuthenticatedDirective implements OnInit {
     this.accountService.currentUser$
       .pipe(
         map((user) => {
-          if (this.showWhenAuthenticated && user) {
+          // console.log(user == null);
+          if (this.showWhenAuthenticated && user != null) {
             this.viewContainerRef.createEmbeddedView(this.templateRef);
-          } else if (!this.showWhenAuthenticated && !user) {
+          } else if (!this.showWhenAuthenticated && user == null) {
             this.viewContainerRef.createEmbeddedView(this.templateRef);
           } else {
             this.viewContainerRef.clear();

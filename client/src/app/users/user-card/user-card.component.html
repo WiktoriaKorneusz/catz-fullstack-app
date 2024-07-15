@@ -5,24 +5,29 @@
       decoding="async"
       class="w-12 h-12 rounded-full"
       src="{{
-        user?.mainPhotoUrl
+        user().mainPhotoUrl
           ? 'https://res.cloudinary.com/wkorneusz/image/upload/' +
-            user?.mainPhotoUrl
+            user().mainPhotoUrl
           : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg'
       }}"
-      alt="{{ user?.knownAs }} image"
+      alt="{{ user().knownAs }} image"
     />
   </div>
   <div class="flex-1 min-w-0">
     <h3
       class="text-lg max-w-fit font-medium hover:underline text-blue-500 hover:cursor-pointer truncate hover:underline-offset-2"
     >
-      <a routerLink="/users/{{ user?.userName }}">
-        &commat;{{ user?.userName }}
+      <a routerLink="/users/{{ user().userName }}">
+        &commat;{{ user().userName }}
+        @if(isOnline()){
+        <span class="text-green-500 text-sm">
+          <fa-icon [icon]="faCircle"></fa-icon>
+        </span>
+        }
       </a>
     </h3>
     <p class="text-sm text-slate-400 truncate">
-      {{ user?.knownAs }} ({{ user?.pronouns }})
+      {{ user().knownAs }} ({{ user().pronouns }})
     </p>
   </div>
   <div

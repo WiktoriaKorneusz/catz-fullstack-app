@@ -1,10 +1,15 @@
-import { Component, Input, computed, inject } from '@angular/core';
+import { Component, Input, computed, inject, input } from '@angular/core';
 import { Member } from '../../_models/member';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faUserMinus, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircle,
+  faUserMinus,
+  faUserPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from '@angular/router';
 import { UserInfo } from '../../_models/userInfo';
 import { FollowsService } from '../../_services/follows.service';
+import { PresenceService } from '../../_services/presence.service';
 
 @Component({
   selector: 'app-user-card',
@@ -16,20 +21,29 @@ import { FollowsService } from '../../_services/follows.service';
 })
 export class UserCardComponent {
   private followsService = inject(FollowsService);
-  isFollowed = computed(() => {
-    const userId = this.user?.id ?? null;
-    return (
-      userId !== null && this.followsService.followeesIds().includes(userId)
-    );
-  });
+  private presenceService = inject(PresenceService);
+  user = input.required<UserInfo>();
+
+  // isFollowed = computed(() => {
+  //   const userId = this.user?.id ?? null;
+  //   return (
+  //     userId !== null && this.followsService.followeesIds().includes(userId)
+  //   );
+  // });
+  isFollowed = computed(() =>
+    this.followsService.followeesIds().includes(this.user().id)
+  );
+  isOnline = computed(() =>
+    this.presenceService.onlineUsers().includes(this.user().id)
+  );
   faUserPlus = faUserPlus;
   faUserMinus = faUserMinus;
-
+  faCircle = faCircle;
   // @Input() user: Member = {} as Member;
-  @Input() user: UserInfo | undefined;
+  // @Input() user: UserInfo | undefined;
 
   toggleFollow() {
-    const userId = this.user?.id ?? null;
+    const userId = this.user().id ?? null;
     if (userId !== null) {
       this.followsService.toggleFollow(userId).subscribe({
         next: () => {

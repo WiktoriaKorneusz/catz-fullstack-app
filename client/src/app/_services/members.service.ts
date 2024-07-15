@@ -102,6 +102,12 @@ export class MembersService {
       // this.getHttpOptions()
     );
   }
+  getMemberbyId(id: string) {
+    return this.http.get<Member>(
+      this.baseUrl + 'users/get-by-id/' + id
+      // this.getHttpOptions()
+    );
+  }
 
   updateMember(member: Member) {
     return this.http.put(this.baseUrl + 'users', member);

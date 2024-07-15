@@ -9,7 +9,6 @@
       <select name="orderBy" id="orderBy" [(ngModel)]="content">
         <option value="Users">Users</option>
         <option value="Posts">Posts</option>
-        <option value="Photos">Photos</option>
       </select>
     </div>
     <div class="flow-root">
@@ -17,8 +16,6 @@
       <app-moderate-users></app-moderate-users>
       } @else if (content == "Posts") {
       <app-moderate-posts></app-moderate-posts>
-      } @else if (content == "Photos") {
-      <app-moderate-photos></app-moderate-photos>
       }
     </div>
   </div>

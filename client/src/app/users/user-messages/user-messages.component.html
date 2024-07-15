@@ -10,8 +10,8 @@
         &commat;{{ this.targetUsername }}
       </h1>
     </div>
-    @for (message of messages; track message.id) { @if (message.senderUsername
-    == this.targetUsername) {
+    @for (message of messageService.messageThread(); track message.id) { @if
+    (message.senderUsername == this.targetUsername) {
     <div class="flex w-10/12 gap-1 mb-2">
       <div
         class="flex-shrink-0 w-12 cursor-pointer"
@@ -34,10 +34,8 @@
       <div class="bg-blue-500 text-blue-100 p-4 rounded-lg">
         @if (message.senderDeleted) {
         <p>{{ message.senderUsername }} deleted this message</p>
-        <button
-          class="text-xs cursor-pointer block mt-1 ml-auto"
-          (click)="deleteMessage(message.id)"
-        >
+        <button class="text-xs cursor-pointer block mt-1 ml-auto">
+          <!-- (click)="deleteMessage(message.id)" -->
           <fa-icon [icon]="faTrash"></fa-icon>
         </button>
         } @else {
@@ -46,7 +44,7 @@
           <span class="text-xs text-slate-200 block mt-1">
             {{ message.messageSent | date : "d MMMM y" }}
           </span>
-          <span class="eyeIcon block text-xs mt-1">
+          <!-- <span class="eyeIcon block text-xs mt-1">
             @if(message.dateRead == null){
             <fa-icon [icon]="faEyeSlash"></fa-icon>
 
@@ -54,7 +52,7 @@
 
             <fa-icon [icon]="faEye"></fa-icon>
             }
-          </span>
+          </span> -->
 
           <button
             class="text-xs cursor-pointer block mt-1"
@@ -62,10 +60,8 @@
           >
             <fa-icon [icon]="faFloppyDisk" class="mt-1"></fa-icon>
           </button>
-          <button
-            class="text-xs cursor-pointer block mt-1"
-            (click)="deleteMessage(message.id)"
-          >
+          <button class="text-xs cursor-pointer block mt-1">
+            <!-- (click)="deleteMessage(message.id)" -->
             <fa-icon [icon]="faTrash"></fa-icon>
           </button>
         </div>
@@ -101,10 +97,8 @@
             >
               <fa-icon [icon]="faFloppyDisk" class="mt-1"></fa-icon>
             </button>
-            <button
-              class="text-xs cursor-pointer block mt-1"
-              (click)="deleteMessage(message.id)"
-            >
+            <button class="text-xs cursor-pointer block mt-1">
+              <!-- (click)="deleteMessage(message.id)" -->
               <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>

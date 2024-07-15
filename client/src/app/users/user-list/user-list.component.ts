@@ -67,7 +67,7 @@ export class UserListComponent implements OnInit {
   loadMembers() {
     this.memberService.getMembers();
 
-    console.log(this.memberService.paginatedResult()?.pagination);
+    // console.log(this.memberService.paginatedResult()?.pagination);
   }
 
   changePage(pageNumber: number) {
