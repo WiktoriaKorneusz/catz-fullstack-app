@@ -68,8 +68,13 @@ export class MessageService {
     }
   }
 
-  getMessages(pageNumber: number, pageSize: number, type: string) {
-    let params = setPaginationHeaders(pageNumber, pageSize);
+  getMessages(
+    pageNumber: number,
+    pageSize: number,
+    searchTerm: string,
+    type: string
+  ) {
+    let params = setPaginationHeaders(pageNumber, pageSize, searchTerm);
 
     params = params.append('type', type);
 
@@ -100,6 +105,12 @@ export class MessageService {
   }
 
   deleteMessage(id: number) {
-    return this.http.delete(this.baseUrl + 'messages/' + id);
+    return this.http.delete(this.baseUrl + 'messages/' + id).subscribe({
+      next: () => {
+        this.messageThread.update((messages) =>
+          messages.filter((m) => m.id !== id)
+        );
+      },
+    });
   }
 }

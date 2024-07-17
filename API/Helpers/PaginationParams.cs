@@ -10,6 +10,8 @@ namespace API.Helpers
         private const int MaxPageSize = 10;
         public int PageNumber { get; set; } = 1;
         private int _pageSize = 5;
+        public string SearchTerm { get; set; } = "";
+
         public int PageSize
         {
             get => _pageSize;

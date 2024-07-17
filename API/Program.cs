@@ -31,8 +31,8 @@ app.UseCors(builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredential
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<PresenceHub>("hubs/presence");
-app.MapHub<MessageHub>("hubs/message");
+// app.MapHub<PresenceHub>("hubs/presence");
+// app.MapHub<MessageHub>("hubs/message");
 
 
 

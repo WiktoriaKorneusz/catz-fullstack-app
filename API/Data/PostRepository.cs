@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using API.Helpers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,19 @@ namespace API.Data
                 .ProjectTo<PostDisplayDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
+        public async Task<PagedList<UserPostDto>> GetUserPosts(int userId, PaginationParams paginationParams)
+        {
+            var query = _context.Posts.Where(p => p.UserId == userId).OrderByDescending(p => p.Created).AsQueryable();
+            if (paginationParams.SearchTerm != null && !string.IsNullOrEmpty(paginationParams.SearchTerm.Trim()))
+            {
+                var searchText = paginationParams.SearchTerm.Trim().ToLower();
+                query = query.Where(post =>
+                post.Content.ToLower().Contains(searchText)
+                    );
+            }
+            return await PagedList<UserPostDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserPostDto>(_mapper.ConfigurationProvider), paginationParams.PageNumber, paginationParams.PageSize);
+
+        }
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
@@ -53,10 +67,10 @@ namespace API.Data
                 .ToListAsync();
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
+        // public async Task<bool> SaveAllAsync()
+        // {
+        //     return await _context.SaveChangesAsync() > 0;
+        // }
 
         public void Update(Post post)
         {

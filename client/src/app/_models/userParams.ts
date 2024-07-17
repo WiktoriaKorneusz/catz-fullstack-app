@@ -4,4 +4,5 @@ export class UserParams {
   pageNumber = 1;
   pageSize = 5;
   orderBy = 0;
+  searchTerm = '';
 }

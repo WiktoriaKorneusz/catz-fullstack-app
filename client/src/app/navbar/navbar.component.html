@@ -6,24 +6,24 @@
       >CatZ</a
     >
   </div>
-  <div class="flex items-stretch flex-no-shrink flex-grow text-blue-900">
+  <div class="flex items-stretch flex-no-shrink flex-grow text-blue-800">
     <div class="flex items-stretch justify-end ml-auto text-xl">
       <a
-        *appIsAuthenticated="true"
+        *appIsAuthenticated
         routerLink="/users"
         routerLinkActive="text-blue-950"
         class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
         ><fa-icon [icon]="faUsers"></fa-icon
       ></a>
       <a
-        *appIsAuthenticated="true"
+        *appIsAuthenticated
         routerLink="/follows"
         routerLinkActive="text-blue-950"
         class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
         ><fa-icon [icon]="faAddressBook"></fa-icon
       ></a>
       <a
-        *appIsAuthenticated="true"
+        *appIsAuthenticated
         routerLink="/messages"
         routerLinkActive="text-blue-950"
         class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
@@ -31,26 +31,12 @@
       ></a>
 
       <a
-        *appIsAuthenticated="true"
+        *appIsAuthenticated
         routerLink="/user"
         routerLinkActive="text-blue-950"
         class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
         ><fa-icon [icon]="faCircleUser"></fa-icon
       ></a>
-      <a
-        *appIsAuthenticated="false"
-        routerLink="/login"
-        class="bg-blue-500 text-sm hover:bg-blue-300 text-white font-bold h-4/6 py-1 mt-2 px-3 rounded mx-2 transition duration-300 cursor-pointer"
-      >
-        Login
-      </a>
-      <a
-        *appIsAuthenticated="false"
-        routerLink="/register"
-        class="bg-transparent text-sm hover:bg-blue-500 font-semibold text-blue-500 h-4/6 py-1 mt-2 px-3 hover:text-white border border-blue-500 hover:border-transparent rounded mx-2 transition duration-300 cursor-pointer mr-4"
-      >
-        Register
-      </a>
     </div>
   </div>
 </nav>

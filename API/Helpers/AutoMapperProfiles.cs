@@ -23,9 +23,16 @@ namespace API.Helpers
                 .ForMember(dest => dest.KnownAs, opt => opt.MapFrom(src => src.User.KnownAs))
                 .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.User.Posts.SelectMany(p => p.Photos)
                     .FirstOrDefault(p => p.IsMain).Url));
-
+            CreateMap<Post, UserPostDto>()
+            .ForMember(dest => dest.FirstPhotoUrl, opt => opt.MapFrom(src => src.Photos[0].Url))
+            ;
             CreateMap<User, UserInfoDto>()
                 .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Posts.SelectMany(p => p.Photos)
+                    .FirstOrDefault(p => p.IsMain).Url));
+            CreateMap<User, UserRolesDto>()
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(r => r.Role.Name)));
+            CreateMap<User, UserDataDto>()
+            .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => src.Posts.SelectMany(p => p.Photos)
                     .FirstOrDefault(p => p.IsMain).Url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<UserUpdateDto, User>();

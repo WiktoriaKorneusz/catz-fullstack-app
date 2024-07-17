@@ -1,4 +1,10 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { MessageService } from '../../_services/message.service';
 import { Message } from '../../_models/message';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -15,7 +21,7 @@ import {
   faEye,
   faEyeSlash,
 } from '@fortawesome/free-regular-svg-icons';
-import { Toast, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { MembersService } from '../../_services/members.service';
 import { User } from '../../_models/user';
@@ -27,7 +33,8 @@ import { User } from '../../_models/user';
   templateUrl: './user-messages.component.html',
   styleUrl: './user-messages.component.css',
 })
-export class UserMessagesComponent implements OnInit {
+export class UserMessagesComponent implements OnInit, AfterViewChecked {
+  @ViewChild('messagePanel') messagePanel?: any;
   messageService = inject(MessageService);
   toastr = inject(ToastrService);
   accountService = inject(AccountService);
@@ -65,6 +72,20 @@ export class UserMessagesComponent implements OnInit {
     this.messageService.createHubConnection(this.currentUser, this.userId);
   }
 
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom() {
+    if (this.messagePanel) {
+      try {
+        this.messagePanel.nativeElement.scrollTop =
+          this.messagePanel.nativeElement.scrollHeight;
+      } catch (err) {
+        console.error('Scroll to bottom failed:', err);
+      }
+    }
+  }
   // loadMessages(): void {
   //   if (!this.userId) return;
   //   this.messageService.getMessageThread(this.userId).subscribe({
@@ -111,19 +132,12 @@ export class UserMessagesComponent implements OnInit {
       .then(() => {
         this.messageToSend = '';
       });
+    this.scrollToBottom();
   }
 
-  // deleteMessage(id: number) {
-  //   this.messageService.deleteMessage(id).subscribe({
-  //     next: () => {
-  //       this.messages = this.messages.filter((m) => m.id !== id);
-  //     },
-  //     error: (err) =>
-  //       this.toastr.error(err.Message, 'Failed to delete message', {
-  //         timeOut: 1000,
-  //       }),
-  //   });
-  // }
+  deleteMessage(id: number) {
+    this.messageService.deleteMessage(id);
+  }
 
   ngOnDestroy() {
     this.messageService.stopHubConnection();

@@ -17,6 +17,21 @@
         <option value=" ">mutual followers</option>
       </select>
     </div>
+    <form class="flex h-9 mb-4" (ngSubmit)="search()">
+      <input
+        type="text"
+        name="message"
+        id="message"
+        [(ngModel)]="searchTerm"
+        class="w-10/12 rounded-l-lg px-2 py-1.5 resize-none"
+      />
+      <button
+        type="submit"
+        class="w-2/12 bg-blue-500 text-white rounded-r-lg transition duration-200 cursor-pointer hover:bg-blue-600"
+      >
+        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+      </button>
+    </form>
     <div class="flow-root">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-l font-semibold leading-none text-blue-500 mt-2">

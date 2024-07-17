@@ -46,41 +46,55 @@ namespace API.Data
         public async Task<PagedList<UserInfoDto>> GetFollows(FollowsParams followsParams)
         {
             var follows = context.Follows.AsQueryable();
-            IQueryable<UserInfoDto> query = null;
+            IQueryable<User> query = null;
 
             switch (followsParams.Choice)
             {
                 case "followees":
                     query = follows
                         .Where(f => f.FollowerId == followsParams.UserId)
-                        .Select(f => f.Followee)
-                        .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
+                        .Select(f => f.Followee);
+                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
                 case "followers":
                     query = follows
                         .Where(f => f.FolloweeId == followsParams.UserId)
-                        .Select(f => f.Follower)
-                        .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
+                        .Select(f => f.Follower);
+                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
                 default: //mutual follows
                     var followersids = await GetUserFollowersIds(followsParams.UserId);
                     query = follows
                         .Where(f => f.FolloweeId == followsParams.UserId && followersids
                         .Contains(f.FollowerId))
-                        .Select(f => f.Follower)
-                        .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
+                        .Select(f => f.Follower);
+                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
 
             }
 
-            return await PagedList<UserInfoDto>.CreateAsync(query, followsParams.PageNumber, followsParams.PageSize);
+            if (followsParams.SearchTerm != null && !string.IsNullOrEmpty(followsParams.SearchTerm.Trim()))
+            {
+                var searchText = followsParams.SearchTerm.Trim().ToLower();
+                query = query.Where(user =>
+                    user.UserName.ToLower().Contains(searchText) ||
+                    user.KnownAs.ToLower().Contains(searchText) ||
+                    user.Introduction.ToLower().Contains(searchText) ||
+                    user.About.ToLower().Contains(searchText) ||
+                    user.City.ToLower().Contains(searchText) ||
+                    user.Country.ToLower().Contains(searchText));
+            }
+
+            var users = query.ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
+
+            return await PagedList<UserInfoDto>.CreateAsync(users, followsParams.PageNumber, followsParams.PageSize);
 
         }
 
-        public async Task<bool> SaveChanges()
-        {
-            return await context.SaveChangesAsync() > 0; //error there
+        // public async Task<bool> SaveChanges()
+        // {
+        //     return await context.SaveChangesAsync() > 0; //error there
 
-        }
+        // }
     }
 }

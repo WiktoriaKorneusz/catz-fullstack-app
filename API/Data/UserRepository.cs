@@ -59,6 +59,18 @@ namespace API.Data
             var maxDateOfBirth = today.AddYears(-userParams.MinimalAge);
 
             query = query.Where(u => u.DateOfBirth >= minDateOfBirth && u.DateOfBirth <= maxDateOfBirth);
+            if (userParams.SearchTerm != null && !string.IsNullOrEmpty(userParams.SearchTerm.Trim()))
+            {
+                var searchText = userParams.SearchTerm.Trim().ToLower();
+                query = query.Where(user =>
+                    user.UserName.ToLower().Contains(searchText) ||
+                    user.KnownAs.ToLower().Contains(searchText) ||
+                    user.Introduction.ToLower().Contains(searchText) ||
+                    user.About.ToLower().Contains(searchText) ||
+                    user.City.ToLower().Contains(searchText) ||
+                    user.Country.ToLower().Contains(searchText));
+            }
+
             query = userParams.OrderBy switch
             {
                 1 => query.OrderByDescending(u => u.Created),
@@ -72,11 +84,33 @@ namespace API.Data
             return await PagedList<UserInfoDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserInfoDto>(_mapper.ConfigurationProvider), userParams.PageNumber, userParams.PageSize);
         }
 
+        public async Task<PagedList<UserRolesDto>> GetUsersWithRoles(PaginationParams paginationParams)
+        {
+            var query = _context.Users.AsQueryable();
+            if (paginationParams.SearchTerm != null && !string.IsNullOrEmpty(paginationParams.SearchTerm.Trim()))
+            {
+                var searchText = paginationParams.SearchTerm.Trim().ToLower();
+                query = query.Where(user =>
+                    user.UserName.ToLower().Contains(searchText) ||
+                    user.KnownAs.ToLower().Contains(searchText) ||
+                    user.Introduction.ToLower().Contains(searchText) ||
+                    user.About.ToLower().Contains(searchText) ||
+                    user.City.ToLower().Contains(searchText) ||
+                    user.Country.ToLower().Contains(searchText));
+            }
 
+            query = query.OrderBy(x => x.UserName);
+            return await PagedList<UserRolesDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserRolesDto>(_mapper.ConfigurationProvider), paginationParams.PageNumber, paginationParams.PageSize);
+        }
 
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<UserDataDto> GetUserDataAsync(string username)
+        {
+            return await _context.Users.Where(u => u.UserName == username).ProjectTo<UserDataDto>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
         }
 
         public async Task<User> GetUserByUsernameAsync(string username)
@@ -95,15 +129,15 @@ namespace API.Data
             .ToListAsync();
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
+        // public async Task<bool> SaveAllAsync()
+        // {
+        //     return await _context.SaveChangesAsync() > 0;
+        // }
 
-        public void Update(User user)
-        {
-            _context.Entry(user).State = EntityState.Modified;
-        }
+        // public void Update(User user)
+        // {
+        //     _context.Entry(user).State = EntityState.Modified;
+        // }
 
         public async Task<IEnumerable<PhotoDto>> GetUserPhotosAsync(int userId)
         {

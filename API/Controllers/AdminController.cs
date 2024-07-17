@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.DTOs;
+using API.Helpers;
 using API.Models;
+using API.Extensions;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,21 +14,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class AdminController(UserManager<User> userManager, RoleManager<Role> roleManager) : BaseController
+    public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWork) : BaseController
     {
         [Authorize("RequireAdminRole")]
         [HttpGet("users")]
-        public async Task<ActionResult> GetUsers()
+        public async Task<ActionResult<PagedList<UserRolesDto>>> GetUsers([FromQuery] PaginationParams paginationParams)
         {
-            var users = await userManager.Users
-            .OrderBy(x => x.UserName)
-            .Select(x => new
-            {
-                x.Id,
-                Username = x.UserName,
-                Roles = x.UserRoles.Select(y => y.Role.Name).ToList()
-            })
-            .ToListAsync();
+            var users = await unitOfWork.UserRepository.GetUsersWithRoles(paginationParams);
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
+
+
             return Ok(users);
         }
 
@@ -57,11 +56,6 @@ namespace API.Controllers
             return Ok("mod test");
         }
 
-        [Authorize("RequireModeratorRole")]
-        [HttpGet("photos")]
-        public async Task<ActionResult> GetPhotos()
-        {
-            return Ok("mod test");
-        }
+
     }
 }

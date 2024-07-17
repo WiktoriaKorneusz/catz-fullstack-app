@@ -12,12 +12,17 @@ export function setPaginatedResponse<T>(
   });
 }
 
-export function setPaginationHeaders(pageNumber: number, pageSize: number) {
+export function setPaginationHeaders(
+  pageNumber: number,
+  pageSize: number,
+  searchTerm: string
+) {
   let params = new HttpParams();
 
   if (pageNumber && pageSize) {
     params = params.append('pageNumber', pageNumber);
     params = params.append('pageSize', pageSize);
+    params = params.append('searchTerm', searchTerm);
   }
 
   return params;

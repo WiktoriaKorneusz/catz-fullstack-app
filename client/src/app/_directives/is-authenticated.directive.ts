@@ -14,7 +14,6 @@ import { map } from 'rxjs';
   standalone: true,
 })
 export class IsAuthenticatedDirective implements OnInit {
-  @Input('appIsAuthenticated') showWhenAuthenticated = true;
   private accountService = inject(AccountService);
   private viewContainerRef = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef);
@@ -23,10 +22,8 @@ export class IsAuthenticatedDirective implements OnInit {
     this.accountService.currentUser$
       .pipe(
         map((user) => {
-          // console.log(user == null);
-          if (this.showWhenAuthenticated && user != null) {
-            this.viewContainerRef.createEmbeddedView(this.templateRef);
-          } else if (!this.showWhenAuthenticated && user == null) {
+          // console.log(this.showWhenAuthenticated);
+          if (user != null) {
             this.viewContainerRef.createEmbeddedView(this.templateRef);
           } else {
             this.viewContainerRef.clear();

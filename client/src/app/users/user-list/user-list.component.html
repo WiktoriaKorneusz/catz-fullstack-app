@@ -28,7 +28,7 @@
         <select
           name="orderBy"
           id="orderBy"
-          class="w-full"
+          class="w-full rounded-md mt-1 px-2 py-1.5"
           [(ngModel)]="orderBy"
         >
           <option value="0">Recently Active</option>
@@ -38,17 +38,25 @@
           <option value="4">Age Youngest</option>
           <option value="5">Age Oldest</option>
         </select>
+        <h3 class="text-l leading-none text-blue-500 mt-4">Search</h3>
+        <input
+          type="text"
+          name="message"
+          id="message"
+          [(ngModel)]="searchTerm"
+          class="w-full rounded-md mt-1 px-2 py-1.5 text-md"
+        />
         <div class="flex justify-between items-center gap-3">
           <button
             type="button"
             (click)="resetFilters()"
-            class="bg-red-500 block text-center w-full text-lg hover:bg-red-600 text-white font-bold py-2 px-6 rounded mt-8 transition duration-300 cursor-pointer"
+            class="bg-red-500 block text-center w-full text-lg hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md mt-8 transition duration-300 cursor-pointer"
           >
             Reset
           </button>
           <button
             type="submit"
-            class="bg-blue-500 block text-center w-full text-lg hover:bg-blue-600 text-white font-bold py-2 px-6 rounded mt-8 transition duration-300 cursor-pointer"
+            class="bg-blue-500 block text-center w-full text-lg hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md mt-8 transition duration-300 cursor-pointer"
           >
             Show
           </button>

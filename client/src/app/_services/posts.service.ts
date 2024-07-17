@@ -1,14 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { PostDisplay } from '../_models/postDisplay';
 import { Observable } from 'rxjs';
+import { PaginatedResult } from '../_models/pagination';
+import { UserPost } from '../_models/userPost';
+import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostsService {
   baseUrl = environment.apiUrl;
+  paginatedResult = signal<PaginatedResult<UserPost[]> | null>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -17,6 +21,40 @@ export class PostsService {
       this.baseUrl + 'posts'
       // this.getHttpOptions()
     );
+  }
+
+  // getMessages(pageNumber: number, pageSize: number, type: string) {
+  //   let params = setPaginationHeaders(pageNumber, pageSize);
+
+  //   params = params.append('type', type);
+
+  //   return this.http
+  //     .get<Message[]>(this.baseUrl + 'messages', {
+  //       observe: 'response',
+  //       params,
+  //     })
+  //     .subscribe({
+  //       next: (response) =>
+  //         setPaginatedResponse(response, this.paginatedResult),
+  //     });
+  // }
+
+  getUserPosts(
+    pageNumber: number,
+    pageSize: number,
+    searchTerm: string,
+    userId: number
+  ) {
+    let params = setPaginationHeaders(pageNumber, pageSize, searchTerm);
+    return this.http
+      .get<UserPost[]>(this.baseUrl + 'posts/user/' + userId, {
+        observe: 'response',
+        params,
+      })
+      .subscribe({
+        next: (response) =>
+          setPaginatedResponse(response, this.paginatedResult),
+      });
   }
 
   getPost(id: number) {

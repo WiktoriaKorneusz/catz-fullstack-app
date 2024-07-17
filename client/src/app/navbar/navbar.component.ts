@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -8,6 +8,7 @@ import {
   faAddressBook,
 } from '@fortawesome/free-solid-svg-icons';
 import { IsAuthenticatedDirective } from '../_directives/is-authenticated.directive';
+import { AccountService } from '../_services/account.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ import { IsAuthenticatedDirective } from '../_directives/is-authenticated.direct
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
+  accountService = inject(AccountService);
   faUsers = faUsers;
   faEnvelope = faEnvelope;
   faCircleUser = faCircleUser;

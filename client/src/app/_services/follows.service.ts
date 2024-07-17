@@ -26,8 +26,13 @@ export class FollowsService {
     return this.http.post(this.baseUrl + 'follow/' + followeeId, {});
   }
 
-  getFollows(choice: string, pageNumber: number, pageSize: number) {
-    let params = setPaginationHeaders(pageNumber, pageSize);
+  getFollows(
+    choice: string,
+    pageNumber: number,
+    pageSize: number,
+    searchTerm: string
+  ) {
+    let params = setPaginationHeaders(pageNumber, pageSize, searchTerm);
     params = params.append('choice', choice);
     return this.http
       .get<UserInfo[]>(this.baseUrl + 'follow', {

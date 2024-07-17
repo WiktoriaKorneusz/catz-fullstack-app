@@ -47,6 +47,7 @@ export class UserListComponent implements OnInit {
   };
   // select
   orderBy: number = 0;
+  searchTerm = '';
 
   constructor(
     public memberService: MembersService,
@@ -89,6 +90,7 @@ export class UserListComponent implements OnInit {
     this.memberService.userParams().maximalAge = this.sliderMaxValue;
     this.memberService.userParams().pageNumber = 1;
     this.memberService.userParams().orderBy = this.orderBy;
+    this.memberService.userParams().searchTerm = this.searchTerm.trim();
     this.loadMembers();
   }
 }

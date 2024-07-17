@@ -7,6 +7,7 @@ using API.DTOs;
 using API.Extensions;
 using API.Interfaces;
 using API.Models;
+using API.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,58 +15,55 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class PostsController : BaseController
+    public class PostsController(IUnitOfWork unitOfWork, IPhotoService photoService, IMapper mapper) : BaseController
     {
-        private readonly IPostRepository _postRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IPhotoService _photoService;
-        private readonly IMapper _mapper;
-
-        public PostsController(IPostRepository postRepository, IUserRepository userRepository, IPhotoService photoService, IMapper mapper)
-        {
-            _postRepository = postRepository;
-            _userRepository = userRepository;
-            _photoService = photoService;
-            _mapper = mapper;
-        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PostDisplayDto>>> GetPosts()
         {
-            var posts = await _postRepository.GetPostsDisplayAsync();
+            var posts = await unitOfWork.PostRepository.GetPostsDisplayAsync();
             return Ok(posts);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDisplayDto>> GetPost(int id)
         {
-            var post = await _postRepository.GetPostDisplayByIdAsync(id);
+            var post = await unitOfWork.PostRepository.GetPostDisplayByIdAsync(id);
             if (post == null)
             {
                 return NotFound();
             }
             return Ok(post);
         }
+        [HttpGet("user/{userId:int}")]
+        public async Task<ActionResult<PostDisplayDto>> GetUserPosts([FromQuery] PaginationParams paginationParams, int userId)
+        {
+            var posts = await unitOfWork.PostRepository.GetUserPosts(userId, paginationParams);
+            Response.AddPaginationHeader(new PaginationHeader(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages));
+
+
+            return Ok(posts);
+        }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePost(PostUpdateDto postUpdateDto, int id)
         {
-            var post = await _postRepository.GetPostByIdAsync(id);
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(id);
             if (post == null) return NotFound();
 
             var username = User.GetUsername();
             if (post.User.UserName != username) return Unauthorized();
 
-            _mapper.Map(postUpdateDto, post);
+            mapper.Map(postUpdateDto, post);
 
-            if (await _postRepository.SaveAllAsync()) return NoContent();
+            if (await unitOfWork.Complete()) return NoContent();
             return BadRequest("Couldn't update post");
         }
         [HttpPost("add-post")]
         public async Task<ActionResult<PostDisplayDto>> AddPost([FromForm] PostUpdateDto postDto, List<IFormFile> photos)
         {
 
-            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null) return Unauthorized();
 
             if (photos.Count == 0) return BadRequest("No photos selected");
@@ -75,7 +73,7 @@ namespace API.Controllers
 
             foreach (var file in photos)
             {
-                var result = await _photoService.AddPhotoAsync(file);
+                var result = await photoService.AddPhotoAsync(file);
                 if (result.Error != null) return BadRequest(result.Error.Message);
                 var fullUrl = result.SecureUrl.AbsoluteUri;
 
@@ -108,11 +106,11 @@ namespace API.Controllers
             };
 
             user.Posts.Add(post);
-            // if (await _userRepository.SaveAllAsync()) return CreatedAtAction(nameof(GetPost), new { id = post.Id }, _mapper.Map<PostDisplayDto>(post));
+            // if (await unitOfWork.UserRepository.SaveAllAsync()) return CreatedAtAction(nameof(GetPost), new { id = post.Id }, mapper.Map<PostDisplayDto>(post));
 
-            if (await _userRepository.SaveAllAsync())
+            if (await unitOfWork.Complete())
             {
-                var createdPost = await _postRepository.GetPostDisplayByIdAsync(post.Id);
+                var createdPost = await unitOfWork.PostRepository.GetPostDisplayByIdAsync(post.Id);
                 return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPost);
 
             }
@@ -123,37 +121,37 @@ namespace API.Controllers
         [HttpDelete("delete-post/{id}")]
         public async Task<ActionResult> DeletePost(int id)
         {
-            var post = await _postRepository.GetPostByIdAsync(id);
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(id);
             if (post == null) return NotFound();
 
             var username = User.GetUsername();
             if (post.User.UserName != username) return Unauthorized();
 
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
             if (user == null) return Unauthorized();
 
             foreach (var photo in post.Photos)
             {
-                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                var result = await photoService.DeletePhotoAsync(photo.PublicId);
                 if (result.Error != null) return BadRequest(result.Error.Message);
             }
             user.Posts.Remove(post);
-            if (await _userRepository.SaveAllAsync()) return NoContent();
+            if (await unitOfWork.Complete()) return NoContent();
             return BadRequest("Couldn't delete post");
 
         }
         [HttpPost("add-photo/{id}")]
         public async Task<ActionResult<PostDisplayDto>> AddPhoto(IFormFile file, int id)
         {
-            var post = await _postRepository.GetPostByIdAsync(id);
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(id);
             if (post == null) return NotFound();
 
             var username = User.GetUsername();
             if (post.User.UserName != username) return Unauthorized();
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
             if (user == null) return Unauthorized();
 
-            var result = await _photoService.AddPhotoAsync(file);
+            var result = await photoService.AddPhotoAsync(file);
 
             if (result.Error != null) return BadRequest(result.Error.Message);
             Console.WriteLine(result);
@@ -182,9 +180,9 @@ namespace API.Controllers
 
             post.Photos.Add(photo);
 
-            if (await _postRepository.SaveAllAsync())
+            if (await unitOfWork.Complete())
             {
-                var createdPost = await _postRepository.GetPostDisplayByIdAsync(post.Id);
+                var createdPost = await unitOfWork.PostRepository.GetPostDisplayByIdAsync(post.Id);
                 return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPost);
             }
 
@@ -195,13 +193,13 @@ namespace API.Controllers
         [HttpPut("set-main-photo/{postId}/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int postId, int photoId)
         {
-            var post = await _postRepository.GetPostByIdAsync(postId);
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
             if (post == null) return NotFound();
 
             var username = User.GetUsername();
             if (post.User.UserName != username) return Unauthorized();
 
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
             if (user == null) return Unauthorized();
 
             var photo = post.Photos.FirstOrDefault(x => x.Id == photoId);
@@ -224,9 +222,9 @@ namespace API.Controllers
             photo.IsMain = true;
 
             // Save changes
-            if (await _userRepository.SaveAllAsync())
+            if (await unitOfWork.Complete())
             {
-                await _postRepository.SaveAllAsync();
+                await unitOfWork.Complete();
 
                 return NoContent();
 
@@ -239,13 +237,13 @@ namespace API.Controllers
         [HttpDelete("delete-photo/{postId}/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int postId, int photoId)
         {
-            var post = await _postRepository.GetPostByIdAsync(postId);
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
             if (post == null) return NotFound();
 
             var username = User.GetUsername();
             if (post.User.UserName != username) return Unauthorized();
 
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
             if (user == null) return Unauthorized();
 
             if (post.Photos.Count == 1) return BadRequest("Can't delete the only photo");
@@ -253,12 +251,12 @@ namespace API.Controllers
             var photo = post.Photos.FirstOrDefault(x => x.Id == photoId);
             if (photo == null) return NotFound();
 
-            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+            var result = await photoService.DeletePhotoAsync(photo.PublicId);
             if (result.Error != null) return BadRequest(result.Error.Message);
 
             post.Photos.Remove(photo);
 
-            if (await _postRepository.SaveAllAsync()) return Ok();
+            if (await unitOfWork.Complete()) return Ok();
 
             return BadRequest("Couldn't delete photo");
 

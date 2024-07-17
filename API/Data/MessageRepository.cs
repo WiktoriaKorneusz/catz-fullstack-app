@@ -74,6 +74,14 @@ namespace API.Data
                 "sent" => query.Where(u => u.Sender.Id == messageParams.Id && u.SenderDeleted == false),
                 _ => query.Where(u => u.Recipient.Id == messageParams.Id && u.DateRead == null && u.RecipientDeleted == false) //unread
             };
+            if (messageParams.SearchTerm != null && !string.IsNullOrEmpty(messageParams.SearchTerm.Trim()))
+            {
+                var searchText = messageParams.SearchTerm.Trim().ToLower();
+                query = query.Where(message =>
+                    message.Content.ToLower().Contains(searchText) ||
+                    message.Recipient.UserName.ToLower().Contains(searchText) ||
+                    message.Sender.UserName.ToLower().Contains(searchText));
+            }
 
             var messages = query.ProjectTo<MessageDto>(mapper.ConfigurationProvider);
             return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
@@ -82,7 +90,7 @@ namespace API.Data
 
         public async Task<IEnumerable<MessageDto>> GetMessageThread(int currentId, int targetId)
         {
-            var messages = await context.Messages
+            var query = context.Messages
                 // .Include(m => m.Sender)
                 //     .ThenInclude(u => u.Posts)
                 //         .ThenInclude(p => p.Photos)
@@ -91,20 +99,19 @@ namespace API.Data
                 //         .ThenInclude(p => p.Photos)
                 .Where(x => x.Recipient.Id == currentId && x.RecipientDeleted == false && x.Sender.Id == targetId || x.Recipient.Id == targetId && x.SenderDeleted == false && x.Sender.Id == currentId)
                 .OrderBy(m => m.MessageSent)
-                .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsQueryable();
 
             // var unreadMessages = messages.Where(x => x.DateRead == null && x.Recipient.Id == currentId).ToList();
-            var unreadMessages = messages.Where(x => x.DateRead == null && x.RecipientId == currentId).ToList();
+            var unreadMessages = query.Where(x => x.DateRead == null && x.RecipientId == currentId).ToList();
 
             if (unreadMessages.Count != 0)
             {
                 unreadMessages.ForEach(x => x.DateRead = DateTime.Now);
-                await context.SaveChangesAsync();
+                // await context.SaveChangesAsync();
             }
-
+            return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider)
+                .ToListAsync();
             // return mapper.Map<IEnumerable<MessageDto>>(messages);
-            return messages;
         }
 
         public void RemoveConnection(Connection connection)
@@ -112,9 +119,9 @@ namespace API.Data
             context.Connections.Remove(connection);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
-        }
+        // public async Task<bool> SaveAllAsync()
+        // {
+        //     return await context.SaveChangesAsync() > 0;
+        // }
     }
 }

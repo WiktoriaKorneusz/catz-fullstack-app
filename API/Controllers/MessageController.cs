@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class MessagesController(IMessageRepository messageRepository, IUserRepository userRepository) : BaseController
+    public class MessagesController(IUnitOfWork unitOfWork) : BaseController
     {
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(MessageCreateDto messageCreateDto)
@@ -22,8 +22,8 @@ namespace API.Controllers
             var id = User.GetUserId();
             if (id == messageCreateDto.RecipientId)
                 return BadRequest("You can't send messages to yourself");
-            var sender = await userRepository.GetUserByIdAsync(id);
-            var recipient = await userRepository.GetUserByIdAsync(messageCreateDto.RecipientId);
+            var sender = await unitOfWork.UserRepository.GetUserByIdAsync(id);
+            var recipient = await unitOfWork.UserRepository.GetUserByIdAsync(messageCreateDto.RecipientId);
             if (recipient == null || sender == null) return BadRequest("Can't send message");
             var message = new Message
             {
@@ -33,10 +33,10 @@ namespace API.Controllers
                 // RecipientUsername = recipient.UserName,
                 Content = messageCreateDto.Content
             };
-            messageRepository.AddMessage(message);
-            if (await messageRepository.SaveAllAsync())
+            unitOfWork.MessageRepository.AddMessage(message);
+            if (await unitOfWork.Complete())
             {
-                var createdMessage = await messageRepository.GetMessageAsync(message.Id);
+                var createdMessage = await unitOfWork.MessageRepository.GetMessageAsync(message.Id);
                 return CreatedAtAction(nameof(GetMessage), new { messageId = message.Id }, createdMessage);
 
             }
@@ -45,7 +45,7 @@ namespace API.Controllers
         [HttpGet("{messageId:int}")]
         public async Task<ActionResult<MessageDto>> GetMessage(int messageId)
         {
-            var message = await messageRepository.GetMessageAsync(messageId);
+            var message = await unitOfWork.MessageRepository.GetMessageAsync(messageId);
             return Ok(message);
         }
 
@@ -53,7 +53,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
         {
             messageParams.Id = User.GetUserId();
-            var messages = await messageRepository.GetMessagesForUser(messageParams);
+            var messages = await unitOfWork.MessageRepository.GetMessagesForUser(messageParams);
 
             Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages));
             return Ok(messages);
@@ -63,25 +63,28 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(int targetId)
         {
             var id = User.GetUserId();
-            return Ok(await messageRepository.GetMessageThread(id, targetId));
+            var messages = await unitOfWork.MessageRepository.GetMessageThread(id, targetId);
+            if (unitOfWork.HasChanges()) await unitOfWork.Complete();
+
+            return Ok(messages);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id)
         {
             var userId = User.GetUserId();
-            var message = await messageRepository.GetMessage(id);
+            var message = await unitOfWork.MessageRepository.GetMessage(id);
             if (message == null) return BadRequest("Can't delete message");
             if (message.SenderId != userId && message.RecipientId != userId) return Forbid();
 
             if (message.RecipientId == userId) message.RecipientDeleted = true;
             if (message.SenderId == userId) message.SenderDeleted = true;
 
-            // if (message.RecipientDeleted && message.SenderDeleted) messageRepository.DeleteMessage(message);
-            if (message is { RecipientDeleted: true, SenderDeleted: true }) messageRepository.DeleteMessage(message);
+            // if (message.RecipientDeleted && message.SenderDeleted) unitOfWork.MessageRepository.DeleteMessage(message);
+            if (message is { RecipientDeleted: true, SenderDeleted: true }) unitOfWork.MessageRepository.DeleteMessage(message);
 
 
-            if (await messageRepository.SaveAllAsync()) return Ok();
+            if (await unitOfWork.Complete()) return Ok();
             return BadRequest("Failed to delete message");
 
         }

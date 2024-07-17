@@ -8,6 +8,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
 import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
+import { UserData } from '../_models/userData';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,8 @@ export class MembersService {
   getMembers() {
     let params = setPaginationHeaders(
       this.userParams().pageNumber,
-      this.userParams().pageSize
+      this.userParams().pageSize,
+      this.userParams().searchTerm
     );
 
     params = params.append('minimalAge', this.userParams().minimalAge);
@@ -99,6 +101,12 @@ export class MembersService {
   getMember(username: string) {
     return this.http.get<Member>(
       this.baseUrl + 'users/' + username
+      // this.getHttpOptions()
+    );
+  }
+  getUserData(username: string) {
+    return this.http.get<UserData>(
+      this.baseUrl + 'users/data/' + username
       // this.getHttpOptions()
     );
   }

@@ -16,6 +16,6 @@ namespace API.Interfaces
         Task<IEnumerable<int>> GetUserFollowersIds(int userId); //
         void AddFollow(UserFollow follow);
         void DeleteFollow(UserFollow follow);
-        Task<bool> SaveChanges();
+        // Task<bool> SaveChanges();
     }
 }

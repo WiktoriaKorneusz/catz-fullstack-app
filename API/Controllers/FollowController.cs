@@ -14,26 +14,21 @@ namespace API.Controllers
 {
 
     // [Authorize]
-    public class FollowController(IFollowRepository followRepository) : BaseController
+    public class FollowController(IUnitOfWork unitOfWork) : BaseController
     {
         [HttpPost("{foloweeId:int}")]
         public async Task<ActionResult> ToggleFollow(int foloweeId)
         {
-            foreach (var claim in User.Claims)
-            {
-                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-            }
+
 
 
             var followerId = User.GetUserId();//heres error
-
-            Console.WriteLine("\n\n\n" + followerId + " " + foloweeId + "\n\n\n"); //follower id isnt read
 
 
             if (followerId == foloweeId)
                 return BadRequest("You can't follow yourself");
 
-            var existingFollow = await followRepository.GetUserFollow(followerId, foloweeId);
+            var existingFollow = await unitOfWork.FollowRepository.GetUserFollow(followerId, foloweeId);
             if (existingFollow == null)
             {
                 var follow = new UserFollow
@@ -41,14 +36,14 @@ namespace API.Controllers
                     FollowerId = followerId,
                     FolloweeId = foloweeId
                 };
-                followRepository.AddFollow(follow);
+                unitOfWork.FollowRepository.AddFollow(follow);
             }
             else
             {
-                followRepository.DeleteFollow(existingFollow);
+                unitOfWork.FollowRepository.DeleteFollow(existingFollow);
             }
 
-            if (await followRepository.SaveChanges()) //heres error
+            if (await unitOfWork.Complete()) //heres error
                 return Ok();
 
             return BadRequest("Failed to save follow");
@@ -58,20 +53,20 @@ namespace API.Controllers
         [HttpGet("followeesids")]
         public async Task<ActionResult<IEnumerable<int>>> GetUserFolloweesIds()
         {
-            return Ok(await followRepository.GetUserFolloweesIds(User.GetUserId()));
+            return Ok(await unitOfWork.FollowRepository.GetUserFolloweesIds(User.GetUserId()));
         }
 
         [HttpGet("followersids")]
         public async Task<ActionResult<IEnumerable<int>>> GetUserFollowersIds()
         {
-            return Ok(await followRepository.GetUserFollowersIds(User.GetUserId()));
+            return Ok(await unitOfWork.FollowRepository.GetUserFollowersIds(User.GetUserId()));
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetFollows([FromQuery] FollowsParams followParams)
         {
             followParams.UserId = User.GetUserId();
-            var follows = await followRepository.GetFollows(followParams);
+            var follows = await unitOfWork.FollowRepository.GetFollows(followParams);
             Response.AddPaginationHeader(new PaginationHeader(follows.CurrentPage, follows.PageSize, follows.TotalCount, follows.TotalPages));
             return Ok(follows);
         }

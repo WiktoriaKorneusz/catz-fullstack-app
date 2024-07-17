@@ -17,7 +17,7 @@ namespace API.SignalR
             if (Context.User == null) throw new HubException("cannot get user claim");
 
             var isOnline = await pressenceTracker.UserConnected(Context.User.GetUserId(), Context.ConnectionId);
-            if (isOnline) await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUsername());
+            if (isOnline) await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUserId());
 
             var currentlyConnectedUsers = await pressenceTracker.GetOnlineUsers();
             await Clients.Caller.SendAsync("GetOnlineUsers", currentlyConnectedUsers);
@@ -28,7 +28,7 @@ namespace API.SignalR
             if (Context.User == null) throw new HubException("cannot get user claim");
 
             var isOffline = await pressenceTracker.UserDisconnected(Context.User.GetUserId(), Context.ConnectionId);
-            if (isOffline) await Clients.Others.SendAsync("UserIsOffline", Context.User?.GetUsername());
+            if (isOffline) await Clients.Others.SendAsync("UserIsOffline", Context.User?.GetUserId());
 
 
             await base.OnDisconnectedAsync(exception);

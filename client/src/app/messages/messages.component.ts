@@ -5,11 +5,19 @@ import { CommonModule } from '@angular/common';
 import { AccountService } from '../_services/account.service';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-messages',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    FontAwesomeModule,
+  ],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
 })
@@ -20,6 +28,8 @@ export class MessagesComponent implements OnInit {
   type = 'Unread'; //gjyfhdgd
   pageSize = 5;
   pageNumber = 1;
+  searchTerm = '';
+  faMagnifyingGlass = faMagnifyingGlass;
 
   ngOnInit(): void {
     this.accountService.currentUser$.subscribe({
@@ -34,6 +44,7 @@ export class MessagesComponent implements OnInit {
     this.messageService.getMessages(
       this.pageNumber,
       this.pageSize,
+      this.searchTerm,
       this.type.toLowerCase()
     );
   }
@@ -43,12 +54,26 @@ export class MessagesComponent implements OnInit {
   }
 
   changePage(pageNumber: number) {
+    const searchValue = this.searchTerm;
+    this.searchTerm = '';
     this.pageNumber = pageNumber;
     this.loadMessages();
+    this.searchTerm = searchValue;
   }
 
   handleChange() {
+    const searchValue = this.searchTerm;
+    this.searchTerm = '';
+    this.pageNumber = 1;
     this.loadMessages();
+    this.searchTerm = searchValue;
+  }
+
+  search() {
+    if (this.searchTerm.trim()) {
+      this.pageNumber = 1;
+      this.loadMessages();
+    }
   }
 
   shortenMessage(str: string): string {

@@ -16,6 +16,7 @@ namespace API.Models
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public User User { get; set; }
         public List<Photo> Photos { get; set; } = new();
+        public bool IsApproved { get; set; } = false;
 
     }
 }
