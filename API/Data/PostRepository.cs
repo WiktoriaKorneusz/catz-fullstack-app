@@ -104,6 +104,11 @@ namespace API.Data
                 .SingleOrDefaultAsync();
         }
 
+        public void DeletePost(Post post)
+        {
+            context.Posts.Remove(post);
+        }
+
 
 
     }

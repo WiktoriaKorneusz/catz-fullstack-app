@@ -1,0 +1,11 @@
+<label for="{{control}}" class="font-semibold text-sm text-gray-600 mt-5 pb-1 block">{{label}}</label>
+<input 
+type={{type}}
+[formControl]="control"
+[class.is-invalid]="control.touched && control.invalid" 
+class="border rounded-lg px-3 py-2 mt-1 text-sm w-full" />
+<span *ngIf="control.errors?.['required'] && control.touched" class="text-red-500 text-xs block" >{{label}} is required </span>
+<span *ngIf="control.errors?.['minlength'] && control.touched" class="text-red-500 text-xs block" >{{label}} minimum length is {{control.errors?.['minlength'].requiredLength}} </span>
+<span *ngIf="control.errors?.['maxlength'] && control.touched" class="text-red-500 text-xs block" >{{label}} maximum length is {{control.errors?.['maxlength'].requiredLength}} </span>
+<span *ngIf=" control.errors?.['isMatching'] && control.touched" class="text-red-500 text-xs block" >{{label}} does not match password </span>   
+<span *ngIf=" control.errors?.['isInvalidDate'] && control.touched" class="text-red-500 text-xs block" >{{label}} must be a valid date </span>

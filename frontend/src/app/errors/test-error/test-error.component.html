@@ -1,0 +1,31 @@
+<div class="text-center mt-12">
+
+<button (click)="get404Error()" class="group relative h-12 w-48 overflow-hidden rounded-lg bg-white text-lg shadow m-4">
+    <div class="absolute inset-0 w-3 bg-red-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+    <span class="relative text-black group-hover:text-white">Error 404</span>
+  </button>
+  <button (click)="get400Error()" class="group relative h-12 w-48 overflow-hidden rounded-lg bg-white text-lg shadow m-4">
+    <div class="absolute inset-0 w-3 bg-amber-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+    <span class="relative text-black group-hover:text-white">Error 400</span>
+  </button>
+  <button  (click)="get500Error()"class="group relative h-12 w-48 overflow-hidden rounded-lg bg-white text-lg shadow m-4">
+    <div class="absolute inset-0 w-3 bg-green-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+    <span class="relative text-black group-hover:text-white">Error 500</span>
+  </button>
+  <button (click)="get401Error()" class="group relative h-12 w-48 overflow-hidden rounded-lg bg-white text-lg shadow m-4">
+    <div class="absolute inset-0 w-3 bg-blue-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+    <span class="relative text-black group-hover:text-white">Error 401</span>
+  </button>
+  <button (click)="get400ValidationError()" class="group relative h-12 px-4 overflow-hidden rounded-lg bg-white text-lg shadow m-4">
+    <div class="absolute inset-0 w-3 bg-purple-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+    <span class="relative text-black group-hover:text-white">Error 400 Validation</span>
+  </button>
+
+  <div class="w-full text-red-600" *ngIf="validationErrors.length > 0">
+  <ul>
+    <li *ngFor="let error of validationErrors">
+    <span>
+      {{error}}
+    </span></li>
+  </ul></div>
+</div>

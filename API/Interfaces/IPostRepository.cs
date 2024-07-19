@@ -21,6 +21,7 @@ namespace API.Interfaces
 
         Task<PagedList<UserPostDto>> GetUnapprovedPosts(PaginationParams paginationParams);
         Task<PostDisplayDto> GetUnapprovedPost(int id);
+        void DeletePost(Post post);
 
     }
 }

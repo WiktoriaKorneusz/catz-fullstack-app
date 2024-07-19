@@ -1,0 +1,157 @@
+<div class="mt-8">
+  <div
+    class="mx-auto p-4 max-w-md sm:p-8 bg-blue-200 shadow-2xl shadow-blue-800 w-full rounded-lg"
+  >
+    <div class="flex justify-between items-center mb-6">
+      <h1
+        class="text-3xl font-semibold leading-none text-blue-600 cursor-pointer"
+        [routerLink]="['/users', this.targetUsername]"
+      >
+        &commat;{{ this.targetUsername }}
+      </h1>
+    </div>
+    <div #messagePanel class="max-h-96 overflow-scroll">
+      @for (message of messageService.messageThread(); track message.id) { @if
+      (message.senderUsername == this.targetUsername) {
+      <div class="flex w-10/12 gap-1 mb-2">
+        <div
+          class="flex-shrink-0 w-12 cursor-pointer"
+          [routerLink]="['/users', message.senderUsername]"
+        >
+          <img
+            loading="lazy"
+            decoding="async"
+            class="w-12 h-12 rounded-full"
+            src="{{
+              message?.senderProfilePicture
+                ? 'https://res.cloudinary.com/wkorneusz/image/upload/' +
+                  message?.senderProfilePicture
+                : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg'
+            }}"
+            alt="{{ message?.senderUsername }} image"
+          />
+        </div>
+
+        <div class="bg-blue-500 text-blue-100 p-4 rounded-lg">
+          @if (message.senderDeleted) {
+          <p>{{ message.senderUsername }} deleted this message</p>
+          <div class="flex gap-3">
+            <span class="text-xs text-slate-200 mt-1">
+              {{ message.messageSent | date : "d MMMM y" }}
+            </span>
+            <button
+              class="text-xs cursor-pointer block mt-1 ml-auto"
+              (click)="deleteMessage(message.id)"
+            >
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+          } @else {
+          <p>{{ message.content }}</p>
+          <div class="flex gap-3">
+            <span class="text-xs text-slate-200 block mt-1">
+              {{ message.messageSent | date : "d MMMM y" }}
+            </span>
+            <!-- <span class="eyeIcon block text-xs mt-1">
+            @if(message.dateRead == null){
+            <fa-icon [icon]="faEyeSlash"></fa-icon>
+
+            } @else {
+
+            <fa-icon [icon]="faEye"></fa-icon>
+            }
+          </span> -->
+
+            <button
+              class="text-xs cursor-pointer block mt-1"
+              (click)="copyMessageToClipboard(message.content)"
+            >
+              <fa-icon [icon]="faFloppyDisk" class="mt-1"></fa-icon>
+            </button>
+            <button
+              class="text-xs cursor-pointer block mt-1"
+              (click)="deleteMessage(message.id)"
+            >
+              <!-- (click)="deleteMessage(message.id)" -->
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      } @else{
+      <div class="text-left">
+        <div class="flex w-10/12 gap-1 mb-2 ml-auto justify-end">
+          <div class="bg-slate-400 text-blue-100 p-4 rounded-lg">
+            @if (message.senderDeleted) {
+            <p>You deleted this message</p>
+            } @else {
+
+            <p>{{ message.content }}</p>
+            <div class="flex gap-3">
+              <span class="text-xs text-slate-200 block mt-1">
+                {{ message.messageSent | date : "d MMMM y" }}
+              </span>
+              <span class="eyeIcon block text-xs mt-1">
+                @if(message.dateRead == null){
+                <fa-icon [icon]="faEyeSlash"></fa-icon>
+
+                } @else {
+
+                <fa-icon [icon]="faEye"></fa-icon>
+                }
+              </span>
+
+              <button
+                class="text-xs cursor-pointer block mt-1"
+                (click)="copyMessageToClipboard(message.content)"
+              >
+                <fa-icon [icon]="faFloppyDisk" class="mt-1"></fa-icon>
+              </button>
+              <button
+                class="text-xs cursor-pointer block mt-1"
+                (click)="deleteMessage(message.id)"
+              >
+                <!-- (click)="deleteMessage(message.id)" -->
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </div>
+            }
+          </div>
+          <div class="flex-shrink-0 w-12">
+            <img
+              loading="lazy"
+              decoding="async"
+              class="w-12 h-12 rounded-full cursor-pointer"
+              [routerLink]="['/users', message.senderUsername]"
+              src="{{
+                message?.senderProfilePicture
+                  ? 'https://res.cloudinary.com/wkorneusz/image/upload/' +
+                    message?.senderProfilePicture
+                  : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg'
+              }}"
+              alt="{{ message?.senderUsername }} image"
+            />
+          </div>
+        </div>
+      </div>
+      }
+      <!-- <div>{{ message.content }}</div> -->
+      }
+    </div>
+    <form class="flex h-10 mt-8" (ngSubmit)="sendMessage()">
+      <textarea
+        name="message"
+        id="message"
+        [(ngModel)]="messageToSend"
+        class="w-10/12 rounded-l-lg p-2"
+      ></textarea>
+      <button
+        type="submit"
+        class="w-2/12 bg-blue-500 text-white rounded-r-lg transition duration-200 cursor-pointer hover:bg-blue-600"
+      >
+        <fa-icon [icon]="faArrowRight"></fa-icon>
+      </button>
+    </form>
+  </div>
+</div>

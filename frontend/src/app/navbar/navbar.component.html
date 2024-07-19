@@ -1,0 +1,42 @@
+<nav class="relative select-none bg-grey-100 flex items-stretch w-full">
+  <div class="flex flex-no-shrink items-stretch h-12">
+    <a
+      routerLink="/"
+      class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal text-blue-600 no-underline flex items-center hover:bg-grey-dark font-bold text-3xl monsterrat-600"
+      >CatZ</a
+    >
+  </div>
+  <div class="flex items-stretch flex-no-shrink flex-grow text-blue-800">
+    <div class="flex items-stretch justify-end ml-auto text-xl">
+      <a
+        *appIsAuthenticated
+        routerLink="/users"
+        routerLinkActive="text-blue-950"
+        class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
+        ><fa-icon [icon]="faUsers"></fa-icon
+      ></a>
+      <a
+        *appIsAuthenticated
+        routerLink="/follows"
+        routerLinkActive="text-blue-950"
+        class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
+        ><fa-icon [icon]="faAddressBook"></fa-icon
+      ></a>
+      <a
+        *appIsAuthenticated
+        routerLink="/messages"
+        routerLinkActive="text-blue-950"
+        class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
+        ><fa-icon [icon]="faEnvelope"></fa-icon
+      ></a>
+
+      <a
+        *appIsAuthenticated
+        routerLink="/user"
+        routerLinkActive="text-blue-950"
+        class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal no-underline flex items-center hover:bg-grey-dark"
+        ><fa-icon [icon]="faCircleUser"></fa-icon
+      ></a>
+    </div>
+  </div>
+</nav>

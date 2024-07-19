@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWork) : BaseController
+    public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWork, IPhotoService photoService) : BaseController
     {
         [Authorize("RequireAdminRole")]
         [HttpGet("users")]
@@ -79,6 +79,19 @@ namespace API.Controllers
             post.IsApproved = true;
             if (await unitOfWork.Complete()) return NoContent();
             return BadRequest("Couldn't approve post");
+        }
+
+        [Authorize("RequireModeratorRole")]
+        [HttpDelete("posts/{postId:int}")]
+        public async Task<ActionResult> DisapprovePost(int postId)
+        {
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
+            if (post == null) return NotFound();
+
+            unitOfWork.PostRepository.DeletePost(post);
+
+            if (await unitOfWork.Complete()) return NoContent();
+            return BadRequest("Couldn't delete post");
         }
 
 

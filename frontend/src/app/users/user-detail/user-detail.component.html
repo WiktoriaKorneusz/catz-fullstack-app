@@ -1,0 +1,239 @@
+<div class="">
+  <div *ngIf="isUserLoggedUser" class="relative">
+    <button
+      (click)="logout()"
+      class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around fixed bottom-0 right-8 rounded-md sm:bottom-5 mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
+    >
+      <div
+        class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full bg-red-600 hover:bg-red-700 transition duration-200 ease-in-out"
+      >
+        <fa-icon [icon]="faRightFromBracket"></fa-icon>
+      </div>
+      <button
+        routerLink="/user/edit"
+        class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around fixed bottom-0 right-24 rounded-md sm:bottom-5 mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
+      >
+        <div
+          class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full bg-blue-500 hover:bg-blue-600 transition duration-200 ease-in-out"
+        >
+          <fa-icon [icon]="faPenToSquare"></fa-icon>
+        </div>
+      </button>
+    </button>
+    <button
+      routerLink="/posts/add"
+      class="z-20 text-slate-100 flex flex-col shrink-0 grow-0 justify-around fixed bottom-0 right-40 rounded-md sm:bottom-5 mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
+    >
+      <div
+        class="py-3 shadow-md shadow-blue-800 px-4 text-xl rounded-full bg-green-600 hover:bg-green-700 transition duration-200 ease-in-out"
+      >
+        <fa-icon [icon]="faPlus"></fa-icon>
+      </div>
+    </button>
+  </div>
+
+  <div class="container mx-auto mb-12 md:mb-0 my-5 p-5">
+    <div class="md:flex no-wrap md:-mx-2">
+      <!-- Left Side -->
+      <div class="w-full md:w-3/12 md:mx-2">
+        <!-- Profile Card -->
+        <div
+          class="bg-blue-100 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500"
+        >
+          <div class="image overflow-hidden">
+            <img
+              class="h-auto w-full mx-auto rounded-md"
+              src="{{
+                user.mainPhotoUrl
+                  ? 'https://res.cloudinary.com/wkorneusz/image/upload/' +
+                    user.mainPhotoUrl
+                  : 'https://res.cloudinary.com/wkorneusz/image/upload/v1712359647/catz/bfuotqj7jmdinwhnhojz.jpg'
+              }}"
+              alt="{{ user.knownAs }}"
+            />
+          </div>
+          <h1 class="text-slate-900 mt-4 font-bold text-3xl leading-8">
+            {{ user.knownAs }}
+            <span class="text-base text-slate-500 leading-6 font-normal mb-2">
+              ({{ user.pronouns }})</span
+            >
+          </h1>
+          <h3
+            class="text-blue-500 hover:text-blue-600 text-base font-lg text-semibold leading-6"
+          >
+            &commat;{{ user.userName }}
+            @if(user.userName &&
+            presenceService.onlineUsers().includes(user.id)){
+            <span class="text-green-500 text-sm">
+              <fa-icon [icon]="faCircle"></fa-icon>
+            </span>
+            }
+          </h3>
+          @if (!isUserLoggedUser){
+          <div class="my-3">
+            <button
+              routerLinkActive="text-blue-950"
+              (click)="toggleFollow()"
+              class="relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 transition hover:text-blue-500 hover:cursor-pointer border rounded-lg border-blue-300 bg-blue-100 shadow-md shadow-slate-400 hover:shadow-sm mr-2"
+            >
+              @if (isFollowed) { <fa-icon [icon]="faUserMinus"></fa-icon> }
+              @else{ <fa-icon [icon]="faUserPlus"></fa-icon> }
+            </button>
+            <a
+              routerLinkActive="text-blue-950"
+              [routerLink]="['/messages', user.id]"
+              class="relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 transition hover:text-blue-500 hover:cursor-pointer border rounded-lg border-blue-300 bg-blue-100 shadow-md shadow-slate-400 hover:shadow-sm"
+            >
+              <fa-icon [icon]="faComment"></fa-icon>
+            </a>
+          </div>
+          }
+
+          <p class="text-sm text-slate-700 leading-6">
+            {{ user.introduction }}
+          </p>
+
+          <p class="text-sm text-slate-400 leading-6">{{ user.about }}</p>
+        </div>
+        <!-- End of profile card -->
+        <div class="my-4"></div>
+      </div>
+      <!-- Right Side -->
+      <div class="w-full md:w-9/12 md:mx-2">
+        <!-- Profile tab -->
+        <!-- About Section -->
+        <div
+          class="bg-blue-100 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500"
+        >
+          <div
+            class="flex items-center space-x-2 font-semibold text-slate-900 leading-8"
+          >
+            <span clas="text-green-500">
+              <fa-icon [icon]="faUser"></fa-icon>
+            </span>
+            <span class="tracking-wide text-lg"> About</span>
+          </div>
+          <div class="text-slate-700">
+            <div class="grid md:grid-cols-2 text-sm">
+              <div class="grid grid-cols-2">
+                <div class="px-4 py-2 font-semibold">Country</div>
+                <div class="px-4 py-2">{{ user.country }}</div>
+              </div>
+              <div class="grid grid-cols-2">
+                <div class="px-4 py-2 font-semibold">City</div>
+                <div class="px-4 py-2">{{ user.city }}</div>
+              </div>
+              <div class="grid grid-cols-2">
+                <div class="px-4 py-2 font-semibold">Age</div>
+                <div class="px-4 py-2">{{ user.age }}</div>
+              </div>
+              <div class="grid grid-cols-2">
+                <div class="px-4 py-2 font-semibold">Interests</div>
+                <div class="px-4 py-2">{{ user.interests }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of about section -->
+
+        <div class="my-4"></div>
+
+        <div
+          class="bg-blue-100 pb-6 p-3 shadow-2xl shadow-blue-800 rounded-md md:shadow-xl md:shadow-blue-500"
+        >
+          <div class="grid">
+            <div>
+              <div
+                class="flex items-center justify-between space-x-2 font-semibold text-slate-900 leading-8 mb-3"
+              >
+                <div class="flex gap-2">
+                  <span clas="text-green-500">
+                    <fa-icon [icon]="faImage"></fa-icon>
+                  </span>
+                  <span class="tracking-wide text-lg">Posts</span>
+                </div>
+                <div class="flex mt-2 text-sm">
+                  <input
+                    type="text"
+                    name="message"
+                    id="message"
+                    [(ngModel)]="searchTerm"
+                    class="w-10/12 rounded-l-lg py-1 px-2 h-8 resize-none font-normal"
+                  />
+                  <button
+                    (click)="search()"
+                    class="w-2/12 bg-blue-500 text-white rounded-r-lg transition duration-200 cursor-pointer hover:bg-blue-600"
+                  >
+                    <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- post -->
+                @for (post of postsService.paginatedResult()?.items; track
+                $index) {
+                <div class="relative group overflow-hidden rounded-xl border">
+                  <a routerLink="/posts/{{ post?.id }}">
+                    <div class="image overflow-hidden">
+                      <img
+                        class="h-auto w-full mx-auto rounded-md"
+                        [src]="
+                          'https://res.cloudinary.com/wkorneusz/image/upload/' +
+                          post.firstPhotoUrl
+                        "
+                        alt="Post Image"
+                      />
+                    </div>
+                  </a>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="max-w-lg mx-auto text-center">
+            <div
+              class="inline-flex gap-3 justify-items-end rounded-lg"
+              role="group"
+            >
+              @if((this.postsService.paginatedResult()?.pagination?.currentPage
+              ?? 0) > 1){
+              <a
+                type="button"
+                (click)="
+                  changePage(
+                    (this.postsService.paginatedResult()?.pagination
+                      ?.currentPage ??
+                      1) -
+                      1
+                  )
+                "
+                class="mt-3 rounded-l-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
+              >
+                Previous
+              </a>
+              } @if
+              ((this.postsService.paginatedResult()?.pagination?.currentPage ??
+              0) < (this.postsService.paginatedResult()?.pagination?.totalPages
+              ?? 0)) {
+              <a
+                type="button"
+                (click)="
+                  changePage(
+                    (this.postsService.paginatedResult()?.pagination
+                      ?.currentPage ??
+                      1) +
+                      1
+                  )
+                "
+                class="mt-3 rounded-r-lg relative text-xl max-w-full py-2 px-4 leading-normal no-underline hover:bg-grey-dark text-slate-400 hover:text-blue-500 hover:cursor-pointer shadow-md shadow-slate-400 transition hover:shadow-sm border border-blue-300"
+              >
+                Next </a
+              >}
+            </div>
+          </div>
+        </div>
+        <!-- End of profile tab -->
+      </div>
+    </div>
+  </div>
+</div>
