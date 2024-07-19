@@ -12,20 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class PostRepository : IPostRepository
+    public class PostRepository(DataContext context, IMapper mapper) : IPostRepository
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
-        public PostRepository(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
 
         public async Task<Post> GetPostByIdAsync(int id)
         {
-            return await _context.Posts
+            return await context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Photos)
                 .SingleOrDefaultAsync(p => p.Id == id);
@@ -34,15 +26,18 @@ namespace API.Data
 
         public async Task<PostDisplayDto> GetPostDisplayByIdAsync(int id)
         {
-            return await _context.Posts
+            return await context.Posts
                 .Include(post => post.User)
-                .Where(post => post.Id == id)
-                .ProjectTo<PostDisplayDto>(_mapper.ConfigurationProvider)
+                .Where(post => post.Id == id && post.IsApproved == true)
+                .ProjectTo<PostDisplayDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
         public async Task<PagedList<UserPostDto>> GetUserPosts(int userId, PaginationParams paginationParams)
         {
-            var query = _context.Posts.Where(p => p.UserId == userId).OrderByDescending(p => p.Created).AsQueryable();
+            var query = context.Posts
+                .Where(p => p.UserId == userId & p.IsApproved == true)
+                .OrderByDescending(p => p.Created)
+                .AsQueryable();
             if (paginationParams.SearchTerm != null && !string.IsNullOrEmpty(paginationParams.SearchTerm.Trim()))
             {
                 var searchText = paginationParams.SearchTerm.Trim().ToLower();
@@ -50,31 +45,66 @@ namespace API.Data
                 post.Content.ToLower().Contains(searchText)
                     );
             }
-            return await PagedList<UserPostDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserPostDto>(_mapper.ConfigurationProvider), paginationParams.PageNumber, paginationParams.PageSize);
+            return await PagedList<UserPostDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserPostDto>(mapper.ConfigurationProvider), paginationParams.PageNumber, paginationParams.PageSize);
 
         }
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            return await _context.Posts.Include(p => p.Photos).ToListAsync();
+            return await context.Posts.Include(p => p.Photos).ToListAsync();
         }
 
         public async Task<IEnumerable<PostDisplayDto>> GetPostsDisplayAsync()
         {
-            return await _context.Posts
+            return await context.Posts
                 .Include(p => p.User)
-                .ProjectTo<PostDisplayDto>(_mapper.ConfigurationProvider)
+                .Where(p => p.IsApproved == true)
+                .ProjectTo<PostDisplayDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         // public async Task<bool> SaveAllAsync()
         // {
-        //     return await _context.SaveChangesAsync() > 0;
+        //     return await context.SaveChangesAsync() > 0;
         // }
 
-        public void Update(Post post)
+        // public void Update(Post post)
+        // {
+        //     context.Entry(post).State = EntityState.Modified;
+        // }
+
+        public async Task<PagedList<UserPostDto>> GetUnapprovedPosts(PaginationParams paginationParams)
         {
-            _context.Entry(post).State = EntityState.Modified;
+
+
+            var query = context.Posts
+            .Where(p => p.IsApproved == false)
+            .OrderBy(p => p.Created)
+            .AsQueryable();
+
+            if (paginationParams.SearchTerm != null && !string.IsNullOrEmpty(paginationParams.SearchTerm.Trim()))
+            {
+                var searchText = paginationParams.SearchTerm.Trim().ToLower();
+                query = query.Where(post =>
+                post.Content.ToLower().Contains(searchText) ||
+                post.User.UserName.ToLower().Contains(searchText) ||
+                post.User.KnownAs.ToLower().Contains(searchText));
+            }
+
+            return await PagedList<UserPostDto>.CreateAsync(query.AsNoTracking().ProjectTo<UserPostDto>(mapper.ConfigurationProvider), paginationParams.PageNumber, paginationParams.PageSize);
+
         }
+
+        public async Task<PostDisplayDto> GetUnapprovedPost(int id)
+        {
+            return await context.Posts
+                .Include(post => post.User)
+                .Where(post => post.Id == id)
+                .ProjectTo<PostDisplayDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
+
+
     }
 }

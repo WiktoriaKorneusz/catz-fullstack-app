@@ -10,7 +10,7 @@ namespace API.Interfaces
 {
     public interface IPostRepository
     {
-        void Update(Post post);
+        // void Update(Post post);
         // Task<bool> SaveAllAsync();
         //Post is readolny there
         Task<IEnumerable<PostDisplayDto>> GetPostsDisplayAsync();
@@ -18,5 +18,9 @@ namespace API.Interfaces
         Task<PostDisplayDto> GetPostDisplayByIdAsync(int id);
         Task<IEnumerable<Post>> GetPostsAsync();
         Task<Post> GetPostByIdAsync(int id);
+
+        Task<PagedList<UserPostDto>> GetUnapprovedPosts(PaginationParams paginationParams);
+        Task<PostDisplayDto> GetUnapprovedPost(int id);
+
     }
 }

@@ -51,10 +51,37 @@ namespace API.Controllers
 
         [Authorize("RequireModeratorRole")]
         [HttpGet("posts")]
-        public async Task<ActionResult> GetPosts()
+        public async Task<ActionResult<PagedList<UserPostDto>>> GetPosts([FromQuery] PaginationParams paginationParams)
         {
-            return Ok("mod test");
+            var posts = await unitOfWork.PostRepository.GetUnapprovedPosts(paginationParams);
+            Response.AddPaginationHeader(new PaginationHeader(posts.CurrentPage, posts.PageSize, posts.TotalCount, posts.TotalPages));
+            return Ok(posts);
+
         }
+        [Authorize("RequireModeratorRole")]
+        [HttpGet("posts/{postId:int}")]
+        public async Task<ActionResult<PostDisplayDto>> GetPost(int postId)
+        {
+            var post = await unitOfWork.PostRepository.GetUnapprovedPost(postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
+
+        }
+
+        [Authorize("RequireModeratorRole")]
+        [HttpPut("posts/{postId:int}")]
+        public async Task<ActionResult> ApprovePost(int postId)
+        {
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
+            post.IsApproved = true;
+            if (await unitOfWork.Complete()) return NoContent();
+            return BadRequest("Couldn't approve post");
+        }
+
+
 
 
     }

@@ -56,6 +56,9 @@ namespace API.Controllers
 
             mapper.Map(postUpdateDto, post);
 
+            post.IsApproved = false;
+
+
             if (await unitOfWork.Complete()) return NoContent();
             return BadRequest("Couldn't update post");
         }
@@ -179,6 +182,8 @@ namespace API.Controllers
 
 
             post.Photos.Add(photo);
+            post.IsApproved = false;
+
 
             if (await unitOfWork.Complete())
             {
@@ -189,7 +194,6 @@ namespace API.Controllers
             return BadRequest("Couldn't add post");
         }
 
-        //this will be changed
         [HttpPut("set-main-photo/{postId}/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int postId, int photoId)
         {
@@ -224,8 +228,6 @@ namespace API.Controllers
             // Save changes
             if (await unitOfWork.Complete())
             {
-                await unitOfWork.Complete();
-
                 return NoContent();
 
             }
