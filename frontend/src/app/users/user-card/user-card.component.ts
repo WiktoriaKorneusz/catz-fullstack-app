@@ -24,12 +24,6 @@ export class UserCardComponent {
   private presenceService = inject(PresenceService);
   user = input.required<UserInfo>();
 
-  // isFollowed = computed(() => {
-  //   const userId = this.user?.id ?? null;
-  //   return (
-  //     userId !== null && this.followsService.followeesIds().includes(userId)
-  //   );
-  // });
   isFollowed = computed(() =>
     this.followsService.followeesIds().includes(this.user().id)
   );
@@ -39,8 +33,6 @@ export class UserCardComponent {
   faUserPlus = faUserPlus;
   faUserMinus = faUserMinus;
   faCircle = faCircle;
-  // @Input() user: Member = {} as Member;
-  // @Input() user: UserInfo | undefined;
 
   toggleFollow() {
     const userId = this.user().id ?? null;

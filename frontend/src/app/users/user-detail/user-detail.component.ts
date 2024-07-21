@@ -1,5 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
-import { Member } from '../../_models/member';
+import { Component, inject } from '@angular/core';
 import { MembersService } from '../../_services/members.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -10,7 +9,6 @@ import {
   faTrash,
   faUserPlus,
   faUserMinus,
-  faMessage,
   faComment,
   faCircle,
   faRightFromBracket,
@@ -19,9 +17,7 @@ import {
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Post } from '../../_models/post';
 import { CommonModule } from '@angular/common';
-import { User } from '../../_models/user';
 import { AccountService } from '../../_services/account.service';
-import { take } from 'rxjs';
 import { FollowsService } from '../../_services/follows.service';
 import { PresenceService } from '../../_services/presence.service';
 import { UserData } from '../../_models/userData';
@@ -40,6 +36,8 @@ export class UserDetailComponent {
   presenceService = inject(PresenceService);
   postsService = inject(PostsService);
   private accountService = inject(AccountService);
+  private memberService = inject(MembersService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   isFollowed: boolean = false;
@@ -55,29 +53,16 @@ export class UserDetailComponent {
   faRightFromBracket = faRightFromBracket;
   faMagnifyingGlass = faMagnifyingGlass;
 
+  loggedUser = this.accountService.currentUser();
   user: UserData = {} as UserData;
-  loggedUser: User | null = null;
   posts: Post[] = [];
   isUserLoggedUser: boolean = false;
   pageSize = 3;
   pageNumber = 1;
   searchTerm = '';
 
-  constructor(
-    private memberService: MembersService,
-    private route: ActivatedRoute
-  ) {
-    //finding out if there is logged user
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: (user) => {
-        this.loggedUser = user;
-      },
-    });
-  }
-
   ngOnInit(): void {
     this.loadUser();
-    console.log(this.user.id);
   }
 
   loadUser() {
@@ -120,16 +105,6 @@ export class UserDetailComponent {
     this.pageNumber = pageNumber;
     this.loadPosts(this.user.id);
   }
-  // loadLoggedUser() {
-  //   if (!this.loggedUser) return;
-  //   this.memberService.getUserData(this.loggedUser.username).subscribe({
-  //     next: (member) => {
-  //       this.user = member;
-  //       this.isUserLoggedUser = true;
-  //     },
-  //     error: (err) => console.log(err),
-  //   });
-  // }
 
   toggleFollow() {
     const userId = this.user?.id ?? null;

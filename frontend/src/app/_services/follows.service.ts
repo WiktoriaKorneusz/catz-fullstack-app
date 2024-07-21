@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UserInfo } from '../_models/userInfo';
 import { PaginatedResult } from '../_models/pagination';
-import { UserParams } from '../_models/userParams';
 import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
 
 @Injectable({
@@ -15,14 +14,7 @@ export class FollowsService {
   followeesIds = signal<number[]>([]);
   paginatedResult = signal<PaginatedResult<UserInfo[]> | null>(null);
 
-  // paginatedResult: PaginatedResult<UserInfo[]> = new PaginatedResult<
-  //   UserInfo[]
-  // >();
-  // userParams = signal<UserParams>(new UserParams());
-
   toggleFollow(followeeId: number) {
-    console.log('toggleFollow', followeeId);
-    console.log(this.baseUrl + 'follow/');
     return this.http.post(this.baseUrl + 'follow/' + followeeId, {});
   }
 

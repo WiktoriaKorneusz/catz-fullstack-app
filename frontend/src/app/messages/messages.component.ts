@@ -25,18 +25,15 @@ export class MessagesComponent implements OnInit {
   messageService = inject(MessageService);
   accountService = inject(AccountService);
   currentUsername: string | undefined;
-  type = 'Unread'; //gjyfhdgd
+  type = 'Unread';
   pageSize = 5;
   pageNumber = 1;
   searchTerm = '';
   faMagnifyingGlass = faMagnifyingGlass;
 
   ngOnInit(): void {
-    this.accountService.currentUser$.subscribe({
-      next: (user) => {
-        this.currentUsername = user?.username;
-      },
-    });
+    this.currentUsername = this.accountService.currentUser()?.username;
+
     this.loadMessages();
   }
 

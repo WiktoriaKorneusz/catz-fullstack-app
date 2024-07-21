@@ -89,5 +89,24 @@ namespace API.Controllers
 
         }
 
+        [HttpGet("load/{targetId:int}")]
+        public async Task<ActionResult<IEnumerable<MessageDto>>> LoadMessages(int targetId, [FromQuery] int messagesCount = 0, [FromQuery] int batchSize = 4)
+        {
+            var id = User.GetUserId();
+            var messages = await unitOfWork.MessageRepository.GetMessages(id, targetId, messagesCount, batchSize);
+            return Ok(messages);
+
+
+        }
+        [HttpGet("count/{targetId:int}")]
+        public async Task<ActionResult<IEnumerable<MessageDto>>> LoadMessages(int targetId)
+        {
+            var id = User.GetUserId();
+            var count = await unitOfWork.MessageRepository.GetMessageCountAsync(id, targetId);
+            return Ok(count);
+
+
+        }
+
     }
 }

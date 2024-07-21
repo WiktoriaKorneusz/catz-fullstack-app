@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Injectable, signal } from '@angular/core';
 import { PostDisplay } from '../_models/postDisplay';
-import { Observable } from 'rxjs';
 import { PaginatedResult } from '../_models/pagination';
 import { UserPost } from '../_models/userPost';
 import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
@@ -17,27 +16,8 @@ export class PostsService {
   constructor(private http: HttpClient) {}
 
   getPosts() {
-    return this.http.get<PostDisplay[]>(
-      this.baseUrl + 'posts'
-      // this.getHttpOptions()
-    );
+    return this.http.get<PostDisplay[]>(this.baseUrl + 'posts');
   }
-
-  // getMessages(pageNumber: number, pageSize: number, type: string) {
-  //   let params = setPaginationHeaders(pageNumber, pageSize);
-
-  //   params = params.append('type', type);
-
-  //   return this.http
-  //     .get<Message[]>(this.baseUrl + 'messages', {
-  //       observe: 'response',
-  //       params,
-  //     })
-  //     .subscribe({
-  //       next: (response) =>
-  //         setPaginatedResponse(response, this.paginatedResult),
-  //     });
-  // }
 
   getUserPosts(
     pageNumber: number,
@@ -58,18 +38,23 @@ export class PostsService {
   }
 
   getPost(id: number) {
-    return this.http.get<PostDisplay>(
-      this.baseUrl + 'posts/' + id
-      // this.getHttpOptions()
-    );
+    return this.http.get<PostDisplay>(this.baseUrl + 'posts/' + id);
   }
 
-  updatePost(id: number, post: PostDisplay) {
-    return this.http.put<PostDisplay>(
-      this.baseUrl + 'posts/' + id,
-      post
-      // this.getHttpOptions()
-    );
+  // updatePost(id: number, post: PostDisplay) {
+  //   return this.http.put<PostDisplay>(this.baseUrl + 'posts/' + id, post);
+  // }
+  updatePost(post: PostDisplay, files: FileList | null, id: number) {
+    const formData = new FormData();
+    formData.append('content', post.content);
+
+    if (files) {
+      Array.from(files).forEach((file) => {
+        formData.append('photos', file, file.name);
+      });
+    }
+
+    return this.http.put(this.baseUrl + 'posts/' + id, formData);
   }
 
   addPost(post: PostDisplay, files: FileList) {
@@ -87,13 +72,11 @@ export class PostsService {
   }
 
   // addPhoto(id: number, file: File) {
+  //   const formData = new FormData();
+  //   formData.append('file', file);
 
-  addPhoto(id: number, file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return this.http.post(this.baseUrl + 'posts/add-photo/' + id, formData);
-  }
+  //   return this.http.post(this.baseUrl + 'posts/add-photo/' + id, formData);
+  // }
 
   deletePhoto(postId: number, photoId: number) {
     return this.http.delete(

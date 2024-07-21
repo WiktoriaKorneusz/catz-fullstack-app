@@ -45,23 +45,6 @@ namespace API.Controllers
             return Ok(posts);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdatePost(PostUpdateDto postUpdateDto, int id)
-        {
-            var post = await unitOfWork.PostRepository.GetPostByIdAsync(id);
-            if (post == null) return NotFound();
-
-            var username = User.GetUsername();
-            if (post.User.UserName != username) return Unauthorized();
-
-            mapper.Map(postUpdateDto, post);
-
-            post.IsApproved = false;
-
-
-            if (await unitOfWork.Complete()) return NoContent();
-            return BadRequest("Couldn't update post");
-        }
         [HttpPost("add-post")]
         public async Task<ActionResult<PostDisplayDto>> AddPost([FromForm] PostUpdateDto postDto, List<IFormFile> photos)
         {
@@ -121,6 +104,75 @@ namespace API.Controllers
 
             return BadRequest("Couldn't add post");
         }
+
+        // [HttpPut("{id}")]
+        // public async Task<ActionResult> UpdatePost(PostUpdateDto postUpdateDto, int id)
+        // {
+        //     var post = await unitOfWork.PostRepository.GetPostByIdAsync(id);
+        //     if (post == null) return NotFound();
+
+        //     var username = User.GetUsername();
+        //     if (post.User.UserName != username) return Unauthorized();
+
+        //     mapper.Map(postUpdateDto, post);
+
+        //     post.IsApproved = false;
+        //     post.Created = DateTime.UtcNow;
+
+
+        //     if (await unitOfWork.Complete()) return NoContent();
+        //     return BadRequest("Couldn't update post");
+        // }
+        [HttpPut("{postId:int}")]
+        public async Task<ActionResult> UpdatePost(int postId, [FromForm] PostUpdateDto postUpdateDto, List<IFormFile> photos = null)
+        {
+
+            var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
+            if (post == null) return NotFound();
+
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            if (user == null || post.User.UserName != user.UserName) return Unauthorized();
+
+            // photos = photos ?? new List<IFormFile>();
+            photos ??= new List<IFormFile>();
+
+
+            if (photos.Count + post.Photos.Count == 0) return BadRequest("No photos selected");
+            if (photos.Count + post.Photos.Count > 5) return BadRequest("You can't upload more than 5 photos");
+
+            if (string.IsNullOrEmpty(postUpdateDto.Content.Trim())) return BadRequest("Post content can't be empty");
+
+            foreach (var file in photos)
+            {
+                var result = await photoService.AddPhotoAsync(file);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+                var fullUrl = result.SecureUrl.AbsoluteUri;
+
+                var parts = fullUrl.Split('/');
+                var versionIndex = Array.FindIndex(parts, part => part.StartsWith('v') && part.Skip(1).All(char.IsDigit));
+                var desiredUrl = string.Join("/", parts.Skip(versionIndex));
+
+                var photo = new Photo
+                {
+                    Url = desiredUrl,
+                    PublicId = result.PublicId
+                };
+
+
+                post.Photos.Add(photo);
+
+            }
+
+            mapper.Map(postUpdateDto, post);
+
+            post.IsApproved = false;
+            post.Created = DateTime.UtcNow;
+
+
+            if (await unitOfWork.Complete()) return NoContent();
+            return BadRequest("Couldn't update post");
+        }
+
         [HttpDelete("delete-post/{id}")]
         public async Task<ActionResult> DeletePost(int id)
         {
@@ -157,16 +209,12 @@ namespace API.Controllers
             var result = await photoService.AddPhotoAsync(file);
 
             if (result.Error != null) return BadRequest(result.Error.Message);
-            Console.WriteLine(result);
             var fullUrl = result.SecureUrl.AbsoluteUri;
 
-            // Split the URL by '/'
             var parts = fullUrl.Split('/');
 
-            // Find the index of the part that starts with 'v' followed by numbers
             var versionIndex = Array.FindIndex(parts, part => part.StartsWith('v') && part.Skip(1).All(char.IsDigit));
 
-            // Join back the relevant parts of the URL
             var desiredUrl = string.Join("/", parts.Skip(versionIndex));
 
 
@@ -183,6 +231,8 @@ namespace API.Controllers
 
             post.Photos.Add(photo);
             post.IsApproved = false;
+            post.Created = DateTime.UtcNow;
+
 
 
             if (await unitOfWork.Complete())

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-test-error',
@@ -10,10 +11,9 @@ import { Component } from '@angular/core';
   styleUrl: './test-error.component.css',
 })
 export class TestErrorComponent {
-  baseUrl = 'http://localhost:5248/api/';
+  baseUrl = environment.apiUrl;
   validationErrors: string[] = [];
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   get404Error() {
     this.http.get(this.baseUrl + 'buggy/not-found').subscribe({

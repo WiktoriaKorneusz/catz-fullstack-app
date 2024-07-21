@@ -5,7 +5,7 @@ import {
   HubConnectionBuilder,
   HubConnectionState,
 } from '@microsoft/signalr';
-import { Toast, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { User } from '../_models/user';
 import { Router } from '@angular/router';
 import { take } from 'rxjs';

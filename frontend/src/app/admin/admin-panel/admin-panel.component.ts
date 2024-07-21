@@ -12,5 +12,4 @@ import { ModerateUsersComponent } from '../moderate-users/moderate-users.compone
 })
 export class AdminPanelComponent {
   content: string = 'Posts';
-  handleChange() {}
 }

@@ -1,17 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Member } from '../../_models/member';
+import { Component, OnInit, inject } from '@angular/core';
 import { MembersService } from '../../_services/members.service';
 import { UserCardComponent } from '../user-card/user-card.component';
-import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { UserInfo } from '../../_models/userInfo';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
 import { LabelType, NgxSliderModule } from '@angular-slider/ngx-slider';
 import { Options } from '@angular-slider/ngx-slider';
-import { PaginatedResult, Pagination } from '../../_models/pagination';
-import { UserParams } from '../../_models/userParams';
-import { User } from '../../_models/user';
 import { AccountService } from '../../_services/account.service';
 import { FormsModule } from '@angular/forms';
 
@@ -23,12 +15,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit {
-  // users: UserInfo[] = [];
-  // pagination: Pagination | undefined;
-  user: User | undefined;
-  // bonk: any;
+  public memberService = inject(MembersService);
+  private accountService = inject(AccountService);
+  user = this.accountService.currentUser();
 
-  // slider
   sliderMinValue: number = this.memberService.userParams().minimalAge;
   sliderMaxValue: number = this.memberService.userParams().maximalAge;
   sliderOptions: Options = {
@@ -45,20 +35,8 @@ export class UserListComponent implements OnInit {
       }
     },
   };
-  // select
   orderBy: number = 0;
   searchTerm = '';
-
-  constructor(
-    public memberService: MembersService,
-    private accountService: AccountService
-  ) {
-    this.accountService.currentUser$.subscribe((user) => {
-      if (user) {
-        this.user = user;
-      }
-    });
-  }
 
   ngOnInit(): void {
     this.loadMembers();
@@ -67,8 +45,6 @@ export class UserListComponent implements OnInit {
 
   loadMembers() {
     this.memberService.getMembers();
-
-    // console.log(this.memberService.paginatedResult()?.pagination);
   }
 
   changePage(pageNumber: number) {

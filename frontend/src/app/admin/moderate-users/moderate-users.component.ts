@@ -1,9 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AdminService } from '../../_services/admin.service';
-import { User } from '../../_models/user';
 import { RouterModule } from '@angular/router';
-import { AccountService } from '../../_services/account.service';
-import { take } from 'rxjs';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -17,20 +14,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 })
 export class ModerateUsersComponent implements OnInit {
   adminService = inject(AdminService);
-  // private accountService = inject(AccountService);
-  // loggedUser: User | null = null;
+
   private pageSize = 5;
   private pageNumber = 1;
   faMagnifyingGlass = faMagnifyingGlass;
   searchTerm = '';
-  // users: User[] = [];
 
   ngOnInit(): void {
-    // this.accountService.currentUser$.pipe(take(1)).subscribe({
-    //   next: (user) => {
-    //     this.loggedUser = user;
-    //   },
-    // });
     this.getUsers();
   }
 
@@ -38,7 +28,6 @@ export class ModerateUsersComponent implements OnInit {
     this.adminService.getUsers(this.pageNumber, this.pageSize, this.searchTerm);
   }
   updateRoles(userId: number, newRoles: string): void {
-    // console.log(`User ID: ${userId}, New Role: ${newRole}`);
     this.adminService.updateUserRoles(userId, [newRoles]).subscribe({
       next: () => {
         const paginatedResult = this.adminService.paginatedUsers();
@@ -48,8 +37,6 @@ export class ModerateUsersComponent implements OnInit {
             user.roles = newRoles.split(',');
           }
         }
-
-        // this.getUsers();
       },
     });
   }

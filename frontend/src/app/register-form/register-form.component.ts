@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -30,14 +29,11 @@ import { TextInputComponent } from '../_forms/text-input/text-input.component';
 })
 export class RegisterFormComponent {
   @Output() cancelRegister = new EventEmitter();
+  public accountService = inject(AccountService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  private formBuilder = inject(FormBuilder);
   registerForm: FormGroup = new FormGroup({});
-
-  constructor(
-    public accountService: AccountService,
-    private router: Router,
-    private toastr: ToastrService,
-    private formBuilder: FormBuilder
-  ) {}
 
   ngOnInit(): void {
     this.formInitialize();
@@ -48,8 +44,6 @@ export class RegisterFormComponent {
       username: ['', [Validators.required, Validators.minLength(6)]],
       pronouns: ['', [Validators.required]],
       knownAs: ['', [Validators.required]],
-      // intorduction: ['', [Validators.required]],
-      // about: ['', [Validators.required]],
       interests: ['', [Validators.required]],
       city: ['', [Validators.required]],
       country: ['', [Validators.required]],
@@ -111,8 +105,6 @@ export class RegisterFormComponent {
   }
 
   register() {
-    console.log(this.registerForm?.value);
-    console.log(this.registerForm?.status);
     if (
       this.registerForm.value.password !==
       this.registerForm.value.passwordConfirm

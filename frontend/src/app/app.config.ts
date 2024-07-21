@@ -8,17 +8,19 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { jwtInterceptor } from './_interceptors/jwt.interceptor';
-import { basicInterceptor } from './_interceptors/basic.interceptor';
+import { errorInterceptor } from './_interceptors/error.interceptor';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([basicInterceptor, jwtInterceptor, loadingInterceptor]),
+      withInterceptors([errorInterceptor, jwtInterceptor, loadingInterceptor]),
       withFetch()
     ),
     provideToastr(),
+    provideAnimations(),
   ],
 };

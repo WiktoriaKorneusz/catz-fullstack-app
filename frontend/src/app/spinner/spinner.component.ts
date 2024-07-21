@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BusyService } from '../_services/busy.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,23 +11,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './spinner.component.css',
 })
 export class SpinnerComponent {
-  // isBusy: boolean = false;
-  // private subscription: Subscription = new Subscription();
-
-  // constructor(private busyService: BusyService) {}
-
-  // ngOnInit() {
-  //   this.subscription.add(
-  //     this.busyService.isBusy().subscribe((isBusy) => {
-  //       this.isBusy = isBusy;
-  //     })
-  //   );
-  // }
-
-  // ngOnDestroy() {
-  //   this.subscription.unsubscribe();
-  // }
-
   isBusy$: Observable<boolean>;
 
   constructor(private busyService: BusyService) {

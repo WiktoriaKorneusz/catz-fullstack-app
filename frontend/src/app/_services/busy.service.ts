@@ -8,8 +8,6 @@ export class BusyService {
   private busyRequestCount = 0;
   private busySubject = new BehaviorSubject<boolean>(false);
 
-  constructor() {}
-
   busy() {
     this.busyRequestCount += 1;
     this.updateBusySubject();

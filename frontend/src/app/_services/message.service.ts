@@ -11,6 +11,7 @@ import {
 } from '@microsoft/signalr';
 import { User } from '../_models/user';
 import { Group } from '../_models/group';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class MessageService {
     this.HubConnection.start().catch((error) => console.log(error));
 
     this.HubConnection.on('ReceiveMessageThread', (messages) => {
-      this.messageThread.set(messages);
+      this.messageThread.set(messages.reverse());
     });
 
     this.HubConnection.on('ReceiveMessage', (message) => {
@@ -53,12 +54,6 @@ export class MessageService {
         });
       }
     });
-
-    // this.HubConnection.on('DeletedMessage', (id) => {
-    //   this.messageThread.update((messages) =>
-    //     messages.filter((m) => m.id !== id)
-    //   );
-    // });
   }
 
   stopHubConnection() {
@@ -93,10 +88,6 @@ export class MessageService {
   }
 
   async sendMessage(recipientId: number, content: string) {
-    // return this.http.post<Message>(this.baseUrl + 'messages', {
-    //   recipientId,
-    //   content,
-    // });
     return this.HubConnection?.invoke('SendMessage', {
       recipientId,
       content,
@@ -111,5 +102,29 @@ export class MessageService {
         );
       },
     });
+  }
+
+  getMessageCount(targetId: number): Observable<number> {
+    return this.http.get<number>(this.baseUrl + 'messages/count/' + targetId);
+  }
+
+  loadMoreMessages(numberOfMessages: number, targetId: number) {
+    return this.http
+      .get<Message[]>(
+        this.baseUrl +
+          'messages/load/' +
+          targetId +
+          '?messagesCount=' +
+          numberOfMessages
+      )
+      .subscribe({
+        next: (newMessages: Message[]) => {
+          const currentMessages = this.messageThread();
+          this.messageThread.set([
+            ...newMessages.reverse(),
+            ...currentMessages,
+          ]);
+        },
+      });
   }
 }

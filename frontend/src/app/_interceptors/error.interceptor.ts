@@ -1,6 +1,4 @@
 import {
-  HttpErrorResponse,
-  HttpEvent,
   HttpHandlerFn,
   HttpInterceptorFn,
   HttpRequest,
@@ -8,17 +6,16 @@ import {
 import { inject } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export const basicInterceptor: HttpInterceptorFn = (
+export const errorInterceptor: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) => {
   const toastrService = inject(ToastrService);
   const router = inject(Router);
-  // toastrService.success('Basic Intercept');
-  // console.log('Basic Intercept');
+
   return next(request).pipe(
     catchError((error) => {
       toastrService.error(error.status + ': ' + error.statusText);
@@ -36,7 +33,7 @@ export const basicInterceptor: HttpInterceptorFn = (
           console.log(error);
           break;
       }
-      return throwError(() => error); // Use throwError function
+      return throwError(() => error);
     })
   );
 };

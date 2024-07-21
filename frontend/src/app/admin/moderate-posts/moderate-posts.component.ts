@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { AccountService } from '../../_services/account.service';
 import { AdminService } from '../../_services/admin.service';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

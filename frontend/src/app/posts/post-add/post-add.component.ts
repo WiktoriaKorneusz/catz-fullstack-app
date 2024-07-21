@@ -1,14 +1,10 @@
-import { Component, HostListener, Input, ViewChild } from '@angular/core';
-import { Member } from '../../_models/member';
+import { Component, HostListener, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AccountService } from '../../_services/account.service';
 import { PostsService } from '../../_services/posts.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../../_models/user';
-import { take } from 'rxjs';
-import { Post } from '../../_models/post';
 import { PostDisplay } from '../../_models/postDisplay';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -18,7 +14,6 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
-import { MembersService } from '../../_services/members.service';
 
 @Component({
   selector: 'app-post-add',
@@ -28,7 +23,11 @@ import { MembersService } from '../../_services/members.service';
   styleUrl: './post-add.component.css',
 })
 export class PostAddComponent {
-  //FontAwesome
+  private accountService = inject(AccountService);
+  private postsService = inject(PostsService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+
   faPlus = faPlus;
   faArrowUp = faArrowUp;
   faArrowLeft = faArrowLeft;
@@ -43,7 +42,7 @@ export class PostAddComponent {
       $event.returnValue = true;
     }
   }
-  currentUser: User | null = null;
+  currentUser = this.accountService.currentUser();
   post: PostDisplay = {
     id: 0,
     mainPhotoUrl: '',
@@ -55,27 +54,9 @@ export class PostAddComponent {
     photos: [],
   };
 
-  //for uploader
   selectedFiles?: FileList;
   previews: string[] = [];
 
-  constructor(
-    private accountService: AccountService,
-    private postsService: PostsService,
-    private membersService: MembersService,
-    private router: Router,
-    private toastr: ToastrService,
-    private route: ActivatedRoute
-  ) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: (user) => {
-        this.currentUser = user;
-      },
-    });
-  }
-
-  ngOnInit() {}
-  //image preview by BezKoder
   selectFiles(event: any): void {
     this.selectedFiles = event.target.files;
     if (this.selectedFiles && this.selectedFiles.length > 5) {
@@ -111,6 +92,10 @@ export class PostAddComponent {
       this.toastr.error('Please select a photo.');
       return;
     }
+    if (this.post.content.trim().length == 0) {
+      this.toastr.error('Post content cannot be empty.');
+      return;
+    }
 
     this.postsService.addPost(this.post, this.selectedFiles).subscribe({
       next: (_) => {
@@ -122,19 +107,5 @@ export class PostAddComponent {
         console.log(err);
       },
     });
-
-    // const formData = new FormData();
-    // formData.append('content', this.post.content);
-
-    // if (this.selectedFiles) {
-    //   Array.from(this.selectedFiles).forEach((file, index) => {
-    //     formData.append(`photos`, file, file.name);
-    //   });
-    // }
-
-    // console.log(this.post);
-    // console.log(formData.get('content'));
-
-    // console.log(formData.getAll('photos'));
   }
 }

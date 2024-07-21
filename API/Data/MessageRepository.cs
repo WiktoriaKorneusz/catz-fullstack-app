@@ -98,7 +98,7 @@ namespace API.Data
                 //     .ThenInclude(u => u.Posts)
                 //         .ThenInclude(p => p.Photos)
                 .Where(x => x.Recipient.Id == currentId && x.RecipientDeleted == false && x.Sender.Id == targetId || x.Recipient.Id == targetId && x.SenderDeleted == false && x.Sender.Id == currentId)
-                .OrderBy(m => m.MessageSent)
+                .OrderByDescending(m => m.MessageSent)
                 .AsQueryable();
 
             // var unreadMessages = messages.Where(x => x.DateRead == null && x.Recipient.Id == currentId).ToList();
@@ -109,10 +109,39 @@ namespace API.Data
                 unreadMessages.ForEach(x => x.DateRead = DateTime.Now);
                 // await context.SaveChangesAsync();
             }
+            query = query.Take(4);
             return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
             // return mapper.Map<IEnumerable<MessageDto>>(messages);
         }
+
+        public async Task<IEnumerable<MessageDto>> GetMessages(int currentId, int targetId, int messagesCount, int batchSize)
+        {
+
+            var query = context.Messages
+                .Where(x => x.Recipient.Id == currentId && x.RecipientDeleted == false && x.Sender.Id == targetId
+                || x.Recipient.Id == targetId && x.SenderDeleted == false && x.Sender.Id == currentId)
+                .OrderByDescending(m => m.MessageSent)
+                .AsQueryable();
+
+            query = query
+            .Skip(messagesCount)
+            .Take(batchSize);
+
+            return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider)
+                .ToListAsync();
+
+        }
+        public async Task<int> GetMessageCountAsync(int currentId, int targetId)
+        {
+            var query = context.Messages
+                .Where(x => (x.Recipient.Id == currentId && x.RecipientDeleted == false && x.Sender.Id == targetId)
+                 || (x.Recipient.Id == targetId && x.SenderDeleted == false && x.Sender.Id == currentId))
+                .AsQueryable();
+
+            return await query.CountAsync();
+        }
+
 
         public void RemoveConnection(Connection connection)
         {

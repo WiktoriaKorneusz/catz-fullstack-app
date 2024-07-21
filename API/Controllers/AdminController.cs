@@ -88,6 +88,12 @@ namespace API.Controllers
             var post = await unitOfWork.PostRepository.GetPostByIdAsync(postId);
             if (post == null) return NotFound();
 
+            foreach (var photo in post.Photos)
+            {
+                var result = await photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+
             unitOfWork.PostRepository.DeletePost(post);
 
             if (await unitOfWork.Complete()) return NoContent();

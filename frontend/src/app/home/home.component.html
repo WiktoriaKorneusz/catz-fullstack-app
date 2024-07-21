@@ -12,6 +12,7 @@
           mad meow to be let in eat from dog's food or nyan nyan goes the cat.
         </p>
       </div>
+      @if (accountService.currentUser() == null){
       <div class="mt-6">
         <a
           routerLink="/login"
@@ -26,6 +27,7 @@
           Register
         </a>
       </div>
+      }
     </div>
   </header>
 

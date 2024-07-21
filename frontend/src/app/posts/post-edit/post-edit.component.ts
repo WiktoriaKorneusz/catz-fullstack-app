@@ -1,11 +1,8 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild, inject } from '@angular/core';
 import { AccountService } from '../../_services/account.service';
 import { PostsService } from '../../_services/posts.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../../_models/user';
-import { take } from 'rxjs';
-import { Post } from '../../_models/post';
 import { PostDisplay } from '../../_models/postDisplay';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -27,7 +24,13 @@ import { MembersService } from '../../_services/members.service';
   styleUrl: './post-edit.component.css',
 })
 export class PostEditComponent {
-  //FontAwesome
+  private accountService = inject(AccountService);
+  private postsService = inject(PostsService);
+  private membersService = inject(MembersService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  private route = inject(ActivatedRoute);
+
   faPlus = faPlus;
   faArrowUp = faArrowUp;
   faArrowLeft = faArrowLeft;
@@ -35,50 +38,27 @@ export class PostEditComponent {
   faUserCircle = faUserCircle;
 
   @ViewChild('editForm') editForm: NgForm | undefined;
-  @HostListener('window:beforeunload', ['$event']) unloadNotification(
-    $event: any
-  ) {
-    if (this.editForm?.dirty) {
-      $event.returnValue = true;
-    }
-  }
-  currentUser: User | null = null;
-  post: PostDisplay | null = null;
-  //for uploader
-  isPhotoUploaderOpen = false;
-  currentFile?: File;
-  preview = '';
 
-  constructor(
-    private accountService: AccountService,
-    private postsService: PostsService,
-    private membersService: MembersService,
-    private router: Router,
-    private toastr: ToastrService,
-    private route: ActivatedRoute
-  ) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: (user) => {
-        this.currentUser = user;
-      },
-    });
-  }
+  currentUser = this.accountService.currentUser();
+  post: PostDisplay | null = null;
+
+  // isPhotoUploaderOpen = false;
+  // currentFile?: File;
+  // selectedFiles?: FileList | null;
+  selectedFiles?: FileList;
+  previews: string[] = [];
 
   ngOnInit() {
     this.loadPost();
   }
 
   loadPost() {
-    this.closePhotoUploader();
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
-    //turning string id into number
     this.postsService.getPost(+id).subscribe({
       next: (post) => {
         this.post = post;
-        // this.getPhotos();
         this.checkAuthorship();
-        console.log(this.post);
       },
       error: (err) => console.log(err),
     });
@@ -91,45 +71,74 @@ export class PostEditComponent {
     }
   }
 
+  selectFiles(event: any): void {
+    this.selectedFiles = event.target.files;
+    if (
+      this.selectedFiles &&
+      this.post?.photos &&
+      this.selectedFiles.length + this.post?.photos.length > 5
+    ) {
+      this.toastr.error('Maximum 5 images are allowed');
+      event.target.value = '';
+      return;
+    }
+    this.previews = [];
+    if (this.selectedFiles && this.selectedFiles[0]) {
+      const numberOfFiles = this.selectedFiles.length;
+      for (let i = 0; i < numberOfFiles; i++) {
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          this.previews.push(e.target.result);
+        };
+
+        reader.readAsDataURL(this.selectedFiles[i]);
+      }
+    }
+  }
+
   updatePost() {
-    console.log(this.post);
     const id = this.post?.id;
     if (!id) return;
-    //turning string id into number
-    this.postsService.updatePost(id, this.editForm?.value).subscribe({
-      next: (_) => {
-        this.toastr.success('Post updated successfully.');
-        this.router.navigateByUrl('/users' + this.post?.userName);
-      },
-      error: (err) => console.log(err),
-    });
+    if (!this.editForm?.valid) return;
+    this.postsService
+      .updatePost(this.editForm?.value, this.selectedFiles ?? null, id)
+      .subscribe({
+        next: (_) => {
+          this.toastr.success('Post updated successfully.');
+          this.router.navigateByUrl('/users/' + this.post?.userName);
+        },
+        error: (err) => console.log(err),
+      });
   }
+  // if (!this.selectedFiles) {
+  //   this.selectedFiles = null;
+  // }
 
-  uploadPhoto() {
-    if (this.post?.photos != undefined && this.post?.photos.length >= 5) {
-      this.toastr.error("You can't add more than 5 photos.");
-      return;
-    }
-    if (!this.currentFile) {
-      this.toastr.error('Please select a photo.');
-      return;
-    }
+  // uploadPhoto() {
+  //   if (this.post?.photos != undefined && this.post?.photos.length >= 5) {
+  //     this.toastr.error("You can't add more than 5 photos.");
+  //     return;
+  //   }
+  //   if (!this.currentFile) {
+  //     this.toastr.error('Please select a photo.');
+  //     return;
+  //   }
 
-    const id = this.post?.id;
-    if (!id) return;
+  //   const id = this.post?.id;
+  //   if (!id) return;
 
-    console.log(this.currentFile);
-    this.postsService.addPhoto(id, this.currentFile).subscribe({
-      next: (_) => {
-        this.toastr.success('Photo added successfully.');
-        this.loadPost();
-      },
-      error: (err) => {
-        this.toastr.error("Couldn't add photo. Please try again.");
-        console.log(err);
-      },
-    });
-  }
+  //   this.postsService.addPhoto(id, this.currentFile).subscribe({
+  //     next: (_) => {
+  //       this.toastr.success('Photo added successfully.');
+  //       this.loadPost();
+  //     },
+  //     error: (err) => {
+  //       this.toastr.error("Couldn't add photo. Please try again.");
+  //       console.log(err);
+  //     },
+  //   });
+  // }
 
   deletePhoto(id: number) {
     const postId = this.post?.id;
@@ -163,35 +172,34 @@ export class PostEditComponent {
   }
 
   //image preview by BezKoder
-  selectFile(event: any): void {
-    this.preview = '';
-    const selectedFiles = event.target.files;
+  // selectFile(event: any): void {
+  //   this.preview = '';
+  //   const selectedFiles = event.target.files;
 
-    if (selectedFiles) {
-      const file: File | null = selectedFiles.item(0);
+  //   if (selectedFiles) {
+  //     const file: File | null = selectedFiles.item(0);
 
-      if (file) {
-        this.preview = '';
-        this.currentFile = file;
+  //     if (file) {
+  //       this.preview = '';
+  //       this.currentFile = file;
 
-        const reader = new FileReader();
+  //       const reader = new FileReader();
 
-        reader.onload = (e: any) => {
-          // console.log(e.target.result);
-          this.preview = e.target.result;
-        };
+  //       reader.onload = (e: any) => {
+  //         this.preview = e.target.result;
+  //       };
 
-        reader.readAsDataURL(this.currentFile);
-      }
-    }
-  }
+  //       reader.readAsDataURL(this.currentFile);
+  //     }
+  //   }
+  // }
 
-  openPhotoUploader() {
-    if (this.post?.photos !== undefined && this.post?.photos.length < 5)
-      this.isPhotoUploaderOpen = true;
-    else this.toastr.error("You can't add more than 5 photos.");
-  }
-  closePhotoUploader() {
-    this.isPhotoUploaderOpen = false;
-  }
+  // openPhotoUploader() {
+  //   if (this.post?.photos !== undefined && this.post?.photos.length < 5)
+  //     this.isPhotoUploaderOpen = true;
+  //   else this.toastr.error("You can't add more than 5 photos.");
+  // }
+  // closePhotoUploader() {
+  //   this.isPhotoUploaderOpen = false;
+  // }
 }

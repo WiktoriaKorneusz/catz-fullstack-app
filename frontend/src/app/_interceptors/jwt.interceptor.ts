@@ -1,24 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { Inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { AccountService } from '../_services/account.service';
-import { take } from 'rxjs/operators';
-import { User } from '../_models/user';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  let currentUser: User | null = null;
-  const isLocalStorageAvailable = typeof localStorage !== 'undefined';
+  const accountService = inject(AccountService);
+  const currentUser = accountService.currentUser();
 
-  if (isLocalStorageAvailable) {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      currentUser = JSON.parse(storedUser);
-    }
-  }
-
-  if (currentUser && currentUser.token) {
-    console.log('User token:', currentUser.token);
-    // Execute your code that should run when the user has a token
-    // For instance, cloning the request to add an Authorization header
+  if (currentUser) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${currentUser.token}`,

@@ -6,7 +6,6 @@ import {
   inject,
 } from '@angular/core';
 import { MessageService } from '../../_services/message.service';
-import { Message } from '../../_models/message';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AccountService } from '../../_services/account.service';
 import { CommonModule } from '@angular/common';
@@ -16,11 +15,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faClipboard,
-  faEye,
-  faEyeSlash,
-} from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { MembersService } from '../../_services/members.service';
@@ -33,18 +28,18 @@ import { User } from '../../_models/user';
   templateUrl: './user-messages.component.html',
   styleUrl: './user-messages.component.css',
 })
-export class UserMessagesComponent implements OnInit, AfterViewChecked {
+export class UserMessagesComponent implements OnInit {
   @ViewChild('messagePanel') messagePanel?: any;
   messageService = inject(MessageService);
   toastr = inject(ToastrService);
   accountService = inject(AccountService);
   membersService = inject(MembersService);
-  currentUser: User | undefined;
   private route = inject(ActivatedRoute);
+  currentUser: User | null = null;
   userId = Number(this.route.snapshot.paramMap.get('id'));
   targetUsername = '';
   messageToSend = '';
-  // messages: Message[] = [];
+  messageCount = 0;
   faArrowRight = faArrowRight;
   faTrash = faTrash;
   faFloppyDisk = faFloppyDisk;
@@ -52,29 +47,25 @@ export class UserMessagesComponent implements OnInit, AfterViewChecked {
   faEyeSlash = faEyeSlash;
 
   ngOnInit(): void {
-    // this.loadMessages();
     this.membersService.getMemberbyId(this.userId.toString()).subscribe({
       next: (member) => {
         if (!member) return;
         this.targetUsername = member.userName;
       },
     });
-    this.accountService.currentUser$.subscribe({
-      next: (user) => {
-        if (user == null) return;
-        this.currentUser = user;
-      },
-    });
+    this.currentUser = this.accountService.currentUser();
 
-    console.log(this.currentUser);
-    console.log(this.userId);
     if (!this.currentUser) return;
     this.messageService.createHubConnection(this.currentUser, this.userId);
+
+    this.messageService.getMessageCount(this.userId).subscribe({
+      next: (count) => (this.messageCount = count),
+    });
   }
 
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
-  }
+  // ngAfterViewChecked(): void {
+  //   this.scrollToBottom();
+  // }
 
   private scrollToBottom() {
     if (this.messagePanel) {
@@ -86,15 +77,6 @@ export class UserMessagesComponent implements OnInit, AfterViewChecked {
       }
     }
   }
-  // loadMessages(): void {
-  //   if (!this.userId) return;
-  //   this.messageService.getMessageThread(this.userId).subscribe({
-  //     next: (messages) => {
-  //       this.messages = messages;
-  //
-  //     },
-  //   });
-  // }
 
   copyMessageToClipboard(message: string) {
     navigator.clipboard
@@ -112,19 +94,6 @@ export class UserMessagesComponent implements OnInit, AfterViewChecked {
         });
       });
   }
-  // via api call
-  // sendMessage() {
-  //   this.messageService.sendMessage(this.userId, this.messageToSend).subscribe({
-  //     next: (message) => {
-  //       this.messages.push(message);
-  //       this.messageToSend = '';
-  //     },
-  //     error: (err) =>
-  //       this.toastr.error(err.Message, 'Failed to send message', {
-  //         timeOut: 1000,
-  //       }),
-  //   });
-  // }
 
   sendMessage() {
     this.messageService
@@ -141,5 +110,14 @@ export class UserMessagesComponent implements OnInit, AfterViewChecked {
 
   ngOnDestroy() {
     this.messageService.stopHubConnection();
+  }
+
+  loadMore(targetId: number) {
+    // console.log(this.messageService.messageThread().length);
+    if (this.messageService.messageThread().length >= this.messageCount) return;
+    this.messageService.loadMoreMessages(
+      this.messageService.messageThread().length,
+      targetId
+    );
   }
 }

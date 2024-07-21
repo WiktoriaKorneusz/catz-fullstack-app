@@ -1,5 +1,4 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { User } from '../_models/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { PaginatedResult } from '../_models/pagination';

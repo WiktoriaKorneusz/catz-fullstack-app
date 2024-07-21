@@ -1,9 +1,7 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
-import { User } from '../../_models/user';
+import { Component, HostListener, ViewChild, inject } from '@angular/core';
 import { Member } from '../../_models/member';
 import { MembersService } from '../../_services/members.service';
 import { AccountService } from '../../_services/account.service';
-import { take } from 'rxjs';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
@@ -25,20 +23,11 @@ export class UserEditComponent {
       $event.returnValue = true;
     }
   }
-  user: User | null = null;
+  private accountService = inject(AccountService);
+  private memberService = inject(MembersService);
+  private toastr = inject(ToastrService);
+  user = this.accountService.currentUser();
   member: Member | undefined;
-
-  constructor(
-    private accountService: AccountService,
-    private memberService: MembersService,
-    private toastr: ToastrService
-  ) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: (user) => {
-        this.user = user;
-      },
-    });
-  }
 
   ngOnInit() {
     this.loadMember();
@@ -49,7 +38,6 @@ export class UserEditComponent {
     this.memberService.getMember(this.user.username).subscribe({
       next: (member) => {
         this.member = member;
-        console.log(this.member);
       },
     });
   }
@@ -64,6 +52,5 @@ export class UserEditComponent {
         this.toastr.error(error);
       },
     });
-    // console.log(this.member);
   }
 }
