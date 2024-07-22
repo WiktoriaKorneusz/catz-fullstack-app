@@ -1,8 +1,10 @@
 using API.Data;
 using API.Helpers;
 using API.Interfaces;
+using API.Models;
 using API.Services;
 using API.SignalR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
@@ -27,6 +29,15 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddSignalR();
             services.AddSingleton<PressenceTracker>();
+            services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+            services.AddTransient<IEmailService, EmailService>();
+            // services.AddIdentity<User, IdentityRole<int>>(options =>
+            // {
+            //     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+            // })
+            // .AddEntityFrameworkStores<DataContext>()
+            // .AddDefaultTokenProviders();
+
             // services.AddSingleton<PresenceHub>();
             //         services.AddControllers().AddJsonOptions(x =>
             // x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);

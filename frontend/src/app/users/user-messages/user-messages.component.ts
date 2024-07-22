@@ -63,21 +63,6 @@ export class UserMessagesComponent implements OnInit {
     });
   }
 
-  // ngAfterViewChecked(): void {
-  //   this.scrollToBottom();
-  // }
-
-  private scrollToBottom() {
-    if (this.messagePanel) {
-      try {
-        this.messagePanel.nativeElement.scrollTop =
-          this.messagePanel.nativeElement.scrollHeight;
-      } catch (err) {
-        console.error('Scroll to bottom failed:', err);
-      }
-    }
-  }
-
   copyMessageToClipboard(message: string) {
     navigator.clipboard
       .writeText(message)
@@ -101,7 +86,6 @@ export class UserMessagesComponent implements OnInit {
       .then(() => {
         this.messageToSend = '';
       });
-    this.scrollToBottom();
   }
 
   deleteMessage(id: number) {
