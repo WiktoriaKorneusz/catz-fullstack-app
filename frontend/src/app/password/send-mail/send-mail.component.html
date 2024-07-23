@@ -1,0 +1,66 @@
+<form autocomplete="on" #emailForm="ngForm" (ngSubmit)="sendPasswordMail()">
+  <div class="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
+    <h1
+      class="font-bold text-center text-5xl mb-5 text-blue-600 monsterrat-600"
+    >
+      CatZ
+    </h1>
+    <div
+      class="bg-blue-200 shadow-2xl shadow-blue-800 w-full pt-4 rounded-lg divide-y divide-gray-200"
+    >
+      <div>
+        <div class="px-5 py-3">
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Enter your email</label
+          >
+          <input
+            type="email"
+            name="email"
+            id="email"
+            #emailInput="ngModel"
+            required
+            email
+            [(ngModel)]="email"
+            class="mt-2 w-full rounded-lg px-2 py-1.5 resize-none mb-2"
+          />
+          <div
+            *ngIf="
+              emailInput.invalid && (emailInput.dirty || emailInput.touched)
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            <div *ngIf="emailInput.errors?.['required']">
+              Email is required.
+            </div>
+            <div *ngIf="emailInput.errors?.['email']">
+              Invalid email address.
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="emailForm.invalid"
+            *ngIf="emailForm.valid"
+            class="transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
+          >
+            <span class="inline-block mr-2">Reset Password</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="w-4 h-4 inline-block"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

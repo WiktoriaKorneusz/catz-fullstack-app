@@ -43,6 +43,7 @@ export class RegisterFormComponent {
     this.registerForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(6)]],
       pronouns: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       knownAs: ['', [Validators.required]],
       interests: ['', [Validators.required]],
       city: ['', [Validators.required]],
@@ -112,9 +113,12 @@ export class RegisterFormComponent {
       this.toastr.error('passwords do not match!');
       return;
     }
+    this.registerForm.value.clientUri = location.origin + '/email/confirmed';
+    console.log(this.registerForm.value);
+
     this.accountService.register(this.registerForm.value).subscribe({
       next: () => {
-        this.router.navigateByUrl('/user');
+        this.router.navigateByUrl('/email/confirm');
         this.toastr.success('Registered successfully');
       },
       error: (error) => {

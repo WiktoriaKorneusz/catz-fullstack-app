@@ -19,12 +19,14 @@ namespace API.Extensions
             services.AddIdentityCore<User>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
-                opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+                opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultProvider;
+                opt.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
             })
                 .AddRoles<Role>()
                 .AddRoleManager<RoleManager<Role>>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

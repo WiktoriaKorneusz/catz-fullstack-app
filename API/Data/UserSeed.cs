@@ -40,6 +40,9 @@ namespace API.Data
             {
 
                 user.UserName = user.UserName.ToLower();
+                user.EmailConfirmed = true;
+                user.Posts.FirstOrDefault().IsApproved = true;
+
 
                 await userManager.CreateAsync(user, "P4$$w0rd");
                 await userManager.AddToRoleAsync(user, "User");
@@ -53,6 +56,7 @@ namespace API.Data
                 Pronouns = "",
                 City = "",
                 Country = "",
+                EmailConfirmed = true
             };
 
             await userManager.CreateAsync(admin, "P4$$w0rd");

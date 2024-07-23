@@ -19,9 +19,19 @@ import { UserMessagesComponent } from './users/user-messages/user-messages.compo
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { adminGuard } from './_guards/admin.guard';
 import { ApprovePostComponent } from './admin/approve-post/approve-post.component';
+import { ConfiirmEmailComponent } from './email/confiirm-email/confiirm-email.component';
+import { EmailConfirmedComponent } from './email/email-confirmed/email-confirmed.component';
+import { SendMailComponent } from './password/send-mail/send-mail.component';
+import { ResetPasswordComponent } from './password/reset-password/reset-password.component';
+import { PasswordChangedComponent } from './password/password-changed/password-changed.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'email/confirm', component: ConfiirmEmailComponent },
+  { path: 'email/confirmed', component: EmailConfirmedComponent },
+  { path: 'password/send-mail', component: SendMailComponent },
+  { path: 'password/reset', component: ResetPasswordComponent },
+  { path: 'password/changed', component: PasswordChangedComponent },
   {
     path: '',
     runGuardsAndResolvers: 'always',

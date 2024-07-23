@@ -20,6 +20,13 @@
             [label]="'Username'"
           ></app-text-input>
 
+          <!-- Email Input -->
+          <app-text-input
+            [formControl]="$any(registerForm.controls['email'])"
+            [label]="'Email'"
+            [type]="'email'"
+          ></app-text-input>
+
           <!-- Known as Input -->
           <app-text-input
             [formControl]="$any(registerForm.controls['knownAs'])"

@@ -5,6 +5,7 @@ import { User } from '../_models/user';
 import { environment } from '../../environments/environment';
 import { FollowsService } from './follows.service';
 import { PresenceService } from './presence.service';
+import { ResetPasword } from '../_models/resetPassword';
 
 @Injectable({
   providedIn: 'root',
@@ -29,16 +30,7 @@ export class AccountService {
   }
 
   register(model: any) {
-    console.log(model);
-    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
-      map((response: User) => {
-        const user = response;
-
-        if (user) {
-          this.setCurrentUser(user);
-        }
-      })
-    );
+    return this.http.post<User>(this.baseUrl + 'account/register', model);
   }
 
   setCurrentUser(user: User) {
@@ -49,6 +41,30 @@ export class AccountService {
     this.currentUser.set(user);
     this.followsService.getFolloweesIds();
     this.presenceService.createHubConnection(user);
+  }
+
+  confirmEmail(email: string, token: string) {
+    return this.http.get(
+      this.baseUrl +
+        'account/email-confirmation?token=' +
+        token +
+        '&email=' +
+        email
+    );
+  }
+
+  forgotPassword(forgotPasswordModel: any) {
+    return this.http.post(
+      this.baseUrl + 'account/forgot-password',
+      forgotPasswordModel
+    );
+  }
+
+  resetPassword(resetPasswordModel: ResetPasword) {
+    return this.http.post(
+      this.baseUrl + 'account/reset-password',
+      resetPasswordModel
+    );
   }
 
   logout() {
