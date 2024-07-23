@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services
 {
-    public class TokenService(IConfiguration config, UserManager<User> userManager, RoleManager<Role> roleManager) : ITokenService
+    public class TokenService(IConfiguration config, UserManager<User> userManager) : ITokenService
     {
         private readonly SymmetricSecurityKey _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
 

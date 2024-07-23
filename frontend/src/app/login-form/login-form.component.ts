@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -28,12 +28,10 @@ import { TextInputComponent } from '../_forms/text-input/text-input.component';
 export class LoginFormComponent {
   loginForm: FormGroup = new FormGroup({});
 
-  constructor(
-    public accountService: AccountService,
-    private router: Router,
-    private toastr: ToastrService,
-    private formBuilder: FormBuilder
-  ) {}
+  public accountService = inject(AccountService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
+  private formBuilder = inject(FormBuilder);
 
   ngOnInit() {
     this.formInitialize();

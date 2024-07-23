@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Helpers;
 using API.Interfaces;
@@ -47,7 +43,6 @@ namespace API.Data
             .SingleOrDefaultAsync();
         }
 
-        //get users page
         public async Task<PagedList<UserInfoDto>> GetUsersInfo(UserParams userParams)
         {
             var query = _context.Users.AsQueryable();
@@ -129,15 +124,6 @@ namespace API.Data
             .ToListAsync();
         }
 
-        // public async Task<bool> SaveAllAsync()
-        // {
-        //     return await _context.SaveChangesAsync() > 0;
-        // }
-
-        // public void Update(User user)
-        // {
-        //     _context.Entry(user).State = EntityState.Modified;
-        // }
 
         public async Task<IEnumerable<PhotoDto>> GetUserPhotosAsync(int userId)
         {

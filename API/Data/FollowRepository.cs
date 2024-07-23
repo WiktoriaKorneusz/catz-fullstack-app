@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Helpers;
 using API.Interfaces;
@@ -20,7 +16,6 @@ namespace API.Data
         public void AddFollow(UserFollow follow)
         {
             context.Follows.Add(follow);
-            // SaveChanges();
         }
 
         public void DeleteFollow(UserFollow follow)
@@ -54,21 +49,18 @@ namespace API.Data
                     query = follows
                         .Where(f => f.FollowerId == followsParams.UserId)
                         .Select(f => f.Followee);
-                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
                 case "followers":
                     query = follows
                         .Where(f => f.FolloweeId == followsParams.UserId)
                         .Select(f => f.Follower);
-                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
-                default: //mutual follows
+                default:
                     var followersids = await GetUserFollowersIds(followsParams.UserId);
                     query = follows
                         .Where(f => f.FolloweeId == followsParams.UserId && followersids
                         .Contains(f.FollowerId))
                         .Select(f => f.Follower);
-                    // .ProjectTo<UserInfoDto>(mapper.ConfigurationProvider);
                     break;
 
             }
@@ -91,10 +83,6 @@ namespace API.Data
 
         }
 
-        // public async Task<bool> SaveChanges()
-        // {
-        //     return await context.SaveChangesAsync() > 0; //error there
 
-        // }
     }
 }

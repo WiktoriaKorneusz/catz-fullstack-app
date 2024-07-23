@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
@@ -62,16 +58,6 @@ namespace API.Data
                 .ProjectTo<PostDisplayDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
-
-        // public async Task<bool> SaveAllAsync()
-        // {
-        //     return await context.SaveChangesAsync() > 0;
-        // }
-
-        // public void Update(Post post)
-        // {
-        //     context.Entry(post).State = EntityState.Modified;
-        // }
 
         public async Task<PagedList<UserPostDto>> GetUnapprovedPosts(PaginationParams paginationParams)
         {

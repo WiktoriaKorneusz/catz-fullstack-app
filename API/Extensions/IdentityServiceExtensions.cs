@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using API.Data;
 using API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +9,6 @@ namespace API.Extensions
 {
     public static class IdentityServiceExtensions
     {
-        // options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddIdentityCore<User>(opt =>

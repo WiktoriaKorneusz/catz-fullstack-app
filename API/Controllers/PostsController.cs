@@ -1,20 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Extensions;
 using API.Interfaces;
 using API.Models;
 using API.Helpers;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace API.Controllers
 {
+    [Authorize]
+
     public class PostsController(IUnitOfWork unitOfWork, IPhotoService photoService, IMapper mapper) : BaseController
     {
 

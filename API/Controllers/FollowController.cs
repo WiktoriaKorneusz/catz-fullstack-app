@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Extensions;
 using API.Helpers;
@@ -13,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
 
-    // [Authorize]
+    [Authorize]
     public class FollowController(IUnitOfWork unitOfWork) : BaseController
     {
         [HttpPost("{foloweeId:int}")]

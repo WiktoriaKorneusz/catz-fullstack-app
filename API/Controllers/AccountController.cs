@@ -1,16 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using API.Data;
 using API.DTOs;
-using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using API.Models;
-using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -112,10 +103,10 @@ namespace API.Controllers
             var content = $"{subject}\nlink: {callback}";
             var emailMessage = new EmailMessage
             {
-                EmailToId = user.Email,
-                EmailToName = user.UserName,
-                EmailSubject = subject,
-                EmailBody = content
+                ToId = user.Email,
+                ToName = user.UserName,
+                Subject = subject,
+                Body = content
             };
             return await emailService.SendEmail(emailMessage);
 

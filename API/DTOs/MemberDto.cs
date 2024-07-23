@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.DTOs;
-using API.Extensions;
-using API.Models;
-
 namespace API.DTOs
 {
     public class MemberDto

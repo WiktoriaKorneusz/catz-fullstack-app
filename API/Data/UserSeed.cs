@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace API.Data
 {
@@ -62,6 +55,5 @@ namespace API.Data
             await userManager.CreateAsync(admin, "P4$$w0rd");
             await userManager.AddToRolesAsync(admin, ["Admin", "Moderator"]);
         }
-        // await userManager.SaveChangesAsync();
     }
 }

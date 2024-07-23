@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Helpers;
 using API.Interfaces;
@@ -65,7 +61,6 @@ namespace API.Data
         {
             var query = context.Messages
                 .OrderByDescending(m => m.MessageSent)
-                // .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
                 .AsQueryable();
 
             query = messageParams.Type switch
@@ -91,28 +86,19 @@ namespace API.Data
         public async Task<IEnumerable<MessageDto>> GetMessageThread(int currentId, int targetId)
         {
             var query = context.Messages
-                // .Include(m => m.Sender)
-                //     .ThenInclude(u => u.Posts)
-                //         .ThenInclude(p => p.Photos)
-                // .Include(m => m.Recipient)
-                //     .ThenInclude(u => u.Posts)
-                //         .ThenInclude(p => p.Photos)
                 .Where(x => x.Recipient.Id == currentId && x.RecipientDeleted == false && x.Sender.Id == targetId || x.Recipient.Id == targetId && x.SenderDeleted == false && x.Sender.Id == currentId)
                 .OrderByDescending(m => m.MessageSent)
                 .AsQueryable();
 
-            // var unreadMessages = messages.Where(x => x.DateRead == null && x.Recipient.Id == currentId).ToList();
             var unreadMessages = query.Where(x => x.DateRead == null && x.RecipientId == currentId).ToList();
 
             if (unreadMessages.Count != 0)
             {
                 unreadMessages.ForEach(x => x.DateRead = DateTime.Now);
-                // await context.SaveChangesAsync();
             }
             query = query.Take(4);
             return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
-            // return mapper.Map<IEnumerable<MessageDto>>(messages);
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessages(int currentId, int targetId, int messagesCount, int batchSize)
@@ -148,9 +134,6 @@ namespace API.Data
             context.Connections.Remove(connection);
         }
 
-        // public async Task<bool> SaveAllAsync()
-        // {
-        //     return await context.SaveChangesAsync() > 0;
-        // }
+
     }
 }

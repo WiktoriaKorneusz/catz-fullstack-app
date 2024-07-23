@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Models
@@ -28,12 +23,6 @@ namespace API.Models
         public List<Message> MessagesReceived { get; set; } = [];
 
         public ICollection<UserRole> UserRoles { get; set; } = [];
-        // public List<Photo> Photos { get; set; } = new();
-
-        // public int GetAge()
-        // {
-        //     return DateOfBirth.CalculateAge();
-        // }
 
 
     }

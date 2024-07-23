@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Helpers;
 using API.Models;
@@ -18,8 +14,6 @@ namespace API.Interfaces
         Task<IEnumerable<MessageDto>> GetMessageThread(int currentId, int targetId);
         Task<IEnumerable<MessageDto>> GetMessages(int currentId, int targetId, int messagesCount, int batchSize);
         Task<int> GetMessageCountAsync(int currentId, int targetId);
-
-        // Task<bool> SaveAllAsync();
         void AddGroup(Group group);
         void RemoveConnection(Connection connection);
         Task<Connection?> GetConnection(string connectionId);

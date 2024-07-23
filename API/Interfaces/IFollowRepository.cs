@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Helpers;
 using API.Models;
@@ -16,6 +12,5 @@ namespace API.Interfaces
         Task<IEnumerable<int>> GetUserFollowersIds(int userId); //
         void AddFollow(UserFollow follow);
         void DeleteFollow(UserFollow follow);
-        // Task<bool> SaveChanges();
     }
 }
