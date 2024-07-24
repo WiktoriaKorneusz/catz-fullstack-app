@@ -13,7 +13,10 @@ namespace API.Extensions
         {
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddDbContext<DataContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();

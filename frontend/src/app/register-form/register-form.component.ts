@@ -114,8 +114,6 @@ export class RegisterFormComponent {
       return;
     }
     this.registerForm.value.clientUri = location.origin + '/email/confirmed';
-    console.log(this.registerForm.value);
-
     this.accountService.register(this.registerForm.value).subscribe({
       next: () => {
         this.router.navigateByUrl('/email/confirm');

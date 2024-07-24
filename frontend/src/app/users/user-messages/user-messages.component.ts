@@ -97,7 +97,6 @@ export class UserMessagesComponent implements OnInit {
   }
 
   loadMore(targetId: number) {
-    // console.log(this.messageService.messageThread().length);
     if (this.messageService.messageThread().length >= this.messageCount) return;
     this.messageService.loadMoreMessages(
       this.messageService.messageThread().length,

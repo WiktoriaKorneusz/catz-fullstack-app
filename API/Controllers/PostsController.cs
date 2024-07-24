@@ -60,13 +60,8 @@ namespace API.Controllers
                 if (result.Error != null) return BadRequest(result.Error.Message);
                 var fullUrl = result.SecureUrl.AbsoluteUri;
 
-                // Split the URL by '/'
                 var parts = fullUrl.Split('/');
-
-                // Find the index of the part that starts with 'v' followed by numbers
                 var versionIndex = Array.FindIndex(parts, part => part.StartsWith('v') && part.Skip(1).All(char.IsDigit));
-
-                // Join back the relevant parts of the URL
                 var desiredUrl = string.Join("/", parts.Skip(versionIndex));
 
                 var photo = new Photo
@@ -74,10 +69,7 @@ namespace API.Controllers
                     Url = desiredUrl,
                     PublicId = result.PublicId
                 };
-                if (user.Posts.Count == 0 && photoList.Count == 0)
-                {
-                    photo.IsMain = true;
-                }
+
 
                 photoList.Add(photo);
             }
@@ -89,7 +81,6 @@ namespace API.Controllers
             };
 
             user.Posts.Add(post);
-            // if (await unitOfWork.UserRepository.SaveAllAsync()) return CreatedAtAction(nameof(GetPost), new { id = post.Id }, mapper.Map<PostDisplayDto>(post));
 
             if (await unitOfWork.Complete())
             {

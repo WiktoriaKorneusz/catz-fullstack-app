@@ -111,34 +111,6 @@ export class PostEditComponent {
         error: (err) => console.log(err),
       });
   }
-  // if (!this.selectedFiles) {
-  //   this.selectedFiles = null;
-  // }
-
-  // uploadPhoto() {
-  //   if (this.post?.photos != undefined && this.post?.photos.length >= 5) {
-  //     this.toastr.error("You can't add more than 5 photos.");
-  //     return;
-  //   }
-  //   if (!this.currentFile) {
-  //     this.toastr.error('Please select a photo.');
-  //     return;
-  //   }
-
-  //   const id = this.post?.id;
-  //   if (!id) return;
-
-  //   this.postsService.addPhoto(id, this.currentFile).subscribe({
-  //     next: (_) => {
-  //       this.toastr.success('Photo added successfully.');
-  //       this.loadPost();
-  //     },
-  //     error: (err) => {
-  //       this.toastr.error("Couldn't add photo. Please try again.");
-  //       console.log(err);
-  //     },
-  //   });
-  // }
 
   deletePhoto(id: number) {
     const postId = this.post?.id;

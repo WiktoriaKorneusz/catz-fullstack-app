@@ -43,14 +43,7 @@ export class TestErrorComponent {
     this.http.post(this.baseUrl + 'account/register', {}).subscribe({
       next: (response) => console.log(response),
       error: (error) => {
-        // const arr = error.error.errors;
-        // console.log(typeof arr);
-        // console.log(arr);
         this.validationErrors = Object.values(error.error.errors) || [];
-        // for (const err of this.validationErrors) {
-        //   console.log(err);
-        // }
-        // console.log(typeof this.validationErrors);
         console.log(this.validationErrors);
       },
     });

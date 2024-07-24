@@ -45,17 +45,17 @@ namespace API.Data
                 .HasOne(s => s.Followee)
                 .WithMany(c => c.Followers)
                 .HasForeignKey(s => s.FolloweeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Message>()
-            .HasOne(x => x.Recipient)
-            .WithMany(x => x.MessagesReceived)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(x => x.Recipient)
+                .WithMany(x => x.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Message>()
-            .HasOne(x => x.Sender)
-            .WithMany(x => x.MessagesSent)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(x => x.Sender)
+                .WithMany(x => x.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
