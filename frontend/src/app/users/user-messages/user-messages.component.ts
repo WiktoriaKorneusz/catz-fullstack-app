@@ -85,11 +85,15 @@ export class UserMessagesComponent implements OnInit {
       .sendMessage(this.userId, this.messageToSend)
       .then(() => {
         this.messageToSend = '';
+        this.messagePanel.nativeElement.scrollTop =
+          this.messagePanel.nativeElement.scrollHeight;
+        this.messageCount++;
       });
   }
 
   deleteMessage(id: number) {
     this.messageService.deleteMessage(id);
+    this.messageCount--;
   }
 
   ngOnDestroy() {
